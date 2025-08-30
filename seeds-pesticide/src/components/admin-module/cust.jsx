@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const Users = () => {
+const Cust = () => {
     const sampleUsers = [
         { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active" },
         { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", status: "Inactive" },
@@ -28,16 +28,16 @@ const Users = () => {
                     {sampleUsers.map((user, index) => (
                         <tr key={user.id}>
                             <td>{index + 1}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.role}</td>
+                            <td>{cust.name}</td>
+                            <td>{cust.email}</td>
+                            <td>{cust.role}</td>
                             <td>
-                                <span className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"}`}>
+                                <span className={`badge ${cust.status === "Active" ? "bg-success" : "bg-danger"}`}>
                                     {user.status}
                                 </span>
                             </td>
                             <td>
-                                <NavLink to={`/user-module/users/${user.id}`} className="btn btn-sm btn-outline-info me-2">
+                                <NavLink to={`/admin-module/cust/${cust.id}`} className="btn btn-sm btn-outline-info me-2">
                                     View
                                 </NavLink>
                                 <button className="btn btn-sm btn-outline-warning me-2">Edit</button>
@@ -51,4 +51,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Cust;
