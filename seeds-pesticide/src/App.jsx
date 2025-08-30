@@ -6,17 +6,30 @@ import Product from './components/Products'
 import User from './components/User'
 import Signup from './components/Signup'
 import Footer from './components/Footer'
+import Dashboard from "./components/admin-module/dashboard";
+import Cust from './components/admin-module/cust'
+import Products from './components/admin-module/products'
+import Sales from './components/admin-module/sales'
+import Reports from './components/admin-module/reports'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 
-// Layout with Navbar + Footer always included
-const Layout = () => {
+const PublicLayout = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
       <Nav />
       <main className="flex-grow-1">
-        <Outlet /> {/* Page content will render here */}
+        <Outlet />
       </main>
       <Footer />
+    </div>
+  )
+}
+const AdminLayout = () => {
+  return (
+    <div className="d-flex flex-column min-vh-100">
+      <main className="flex-grow-1">
+        <Outlet />
+      </main>
     </div>
   )
 }
@@ -25,13 +38,24 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Layout />,  // Wrap all routes with layout
+      element: <PublicLayout />,
       children: [
         { path: "/", element: <Home /> },
         { path: "/login", element: <Login /> },
         { path: "/products", element: <Product /> },
         { path: "/user/:admin", element: <User /> },
-        { path: "/signup", element: <Signup /> }
+        { path: "/signup", element: <Signup /> },
+      ]
+    },
+    {
+      path: "/user-module",
+      element: <AdminLayout />,
+      children: [
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "products", element: <Products /> },
+        { path: "sales", element: <Sales /> },
+        { path: "reports", element: <Reports /> },
+        { path: "customers", element: <Cust /> },
       ]
     }
   ])

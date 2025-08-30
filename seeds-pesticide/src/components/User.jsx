@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, NavLink } from "react-router-dom";
 
 const User = () => {
     const { admin } = useParams();
@@ -14,21 +14,27 @@ const User = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-
         if (userId === "admin" && password === "1234") {
             setAuthenticated(true);
             setError("");
         } else {
-            setError("Invalid ID or Password ❌");
+            setError("Invalid ID or Password");
             setAuthenticated(false);
         }
     };
 
+
     if (!authenticated) {
         return (
-            <div className="d-flex justify-content-center align-items-center py-5 bg-light">
-                <div className="card shadow p-4" style={{ width: "22rem" }}>
-                    <h2 className="text-center mb-4">Login</h2>
+            <div
+                className="d-flex justify-content-center align-items-center bg-dark"
+                style={{ minHeight: "100vh" }}
+            >
+                <div
+                    className="card shadow-lg border-0 p-4"
+                    style={{ width: "22rem", borderRadius: "12px" }}
+                >
+                    <h2 className="text-center mb-4 fw-bold text-dark">Admin Login</h2>
                     <form onSubmit={handleLogin}>
                         <div className="mb-3">
                             <input
@@ -50,9 +56,15 @@ const User = () => {
                             />
                         </div>
 
-                        {error && <p className="text-danger small">{error}</p>}
+                        {error && (
+                            <p className="text-danger text-center small fw-bold">{error}</p>
+                        )}
 
-                        <button type="submit" className="btn btn-primary w-100">
+                        <button
+                            type="submit"
+                            className="btn w-100 mt-2 fw-bold"
+                            style={{ backgroundColor: "#198754", color: "white" }}
+                        >
                             Login
                         </button>
                     </form>
@@ -61,12 +73,30 @@ const User = () => {
         );
     }
 
-    // ✅ If authenticated → show Admin Panel
     return (
-        <div className="container mt-5">
-            <h1>Welcome, Admin </h1>
-            <h2 className="mt-4">🔥 Admin Panel</h2>
-            <p>Here you can manage users, settings, and data.</p>
+        <div
+            className="d-flex flex-column justify-content-center align-items-center bg-dark text-white text-center"
+            style={{ minHeight: "100vh", width: "100%", padding: "40px", gap: "20px" }}
+        >
+            <div className="mb-4">
+                <h1 className="fw-bold">Welcome, Admin</h1>
+                <p className="fs-5 text-secondary">
+                    Manage users, products, sales, and reports from here.
+                </p>
+            </div>
+
+            <NavLink
+                className="btn btn-lg px-4 py-2 fw-bold"
+                style={{
+                    background: "linear-gradient(90deg, #ff4d4d, #ff1a75)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                }}
+                to="/user-module/dashboard"
+            >
+                Go to Admin Panel
+            </NavLink>
         </div>
     );
 };
