@@ -1,16 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 const Nav = () => {
     return (
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2e7d32' }}>
-            {/* Dark green background */}
             <div className="container">
-                <Link className="navbar-brand text-warning fw-bold" to="/">
-                    🌾 FarmBasket
-                </Link>
+                <NavLink className="d-flex align-items-center navbar-brand text-warning fw-bold" to="/">
+                    <img src="/FB-Logo.svg" className="img-fluid me-2" alt="FarmBasket Logo" style={{ height: "50px" }} />
+                    FarmBasket
+                </NavLink>
+
                 <button
-                    className="navbar-toggler text-light"
+                    className="navbar-toggler bg-warning"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarNav"
@@ -24,18 +25,19 @@ const Nav = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <Link className="nav-link text-white" to="/">Home</Link>
+                            <NavLink className="nav-link text-white" to="/" end>
+                                Home
+                            </NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link text-white" to="/products">Products</Link>
+                            <NavLink className="nav-link text-white" to="/products">
+                                Products
+                            </NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link
-                                className="btn btn-warning text-dark ms-2"
-                                to="/login"
-                            >
+                            <NavLink className="btn btn-warning text-dark ms-2" to="/login">
                                 Login
-                            </Link>
+                            </NavLink>
                         </li>
                     </ul>
                 </div>

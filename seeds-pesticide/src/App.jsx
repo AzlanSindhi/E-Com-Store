@@ -4,13 +4,14 @@ import Home from './components/home'
 import Login from './components/Login'
 import Product from './components/Products'
 import User from './components/User'
+import Hero from './components/Hero'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <><Nav /><Home /></>
+      element: <><Nav /> <Hero /> </>
     },
     {
       path: "/login",
