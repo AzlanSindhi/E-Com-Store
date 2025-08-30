@@ -3,24 +3,12 @@ import { NavLink } from 'react-router-dom'
 
 const Nav = () => {
     return (
-        <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#2e7d32' }}>
+        <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#19871bff' }}>
             <div className="container">
                 <NavLink className="d-flex align-items-center navbar-brand text-warning fw-bold" to="/">
                     <img src="/FB-Logo.svg" className="img-fluid me-2" alt="FarmBasket Logo" style={{ height: "50px" }} />
                     FarmBasket
                 </NavLink>
-
-                <button
-                    className="navbar-toggler bg-warning"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span className="navbar-toggler-icon"></span>
-                </button>
 
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">

@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     return (
-        <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+        <div className="d-flex align-items-center justify-content-center py-5 bg-light">
             <div className="card shadow-lg p-4" style={{ width: "22rem", borderRadius: "1rem" }}>
 
                 <h2 className="text-center mb-2">Welcome Back</h2>
@@ -37,19 +38,17 @@ const Login = () => {
                     </button>
                 </form>
 
-
                 <div className="d-flex align-items-center my-3">
                     <hr className="flex-grow-1" />
                     <span className="mx-2 text-muted">OR</span>
                     <hr className="flex-grow-1" />
                 </div>
 
-
                 <p className="text-center text-muted mt-3">
                     Don’t have an account?{" "}
-                    <a href="/signup" className="text-primary fw-semibold text-decoration-none">
+                    <Link to="/signup" className="text-decoration-none" style={{ color: "#28a745" }}>
                         Sign Up
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

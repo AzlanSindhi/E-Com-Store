@@ -1,29 +1,32 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState } from "react";
+import { useParams, Navigate } from "react-router-dom";
 
 const User = () => {
-    const params = useParams()
-    const [userId, setUserId] = useState("")
-    const [password, setPassword] = useState("")
-    const [authenticated, setAuthenticated] = useState(false)
-    const [error, setError] = useState("")
+    const { admin } = useParams();
+    const [userId, setUserId] = useState("");
+    const [password, setPassword] = useState("");
+    const [authenticated, setAuthenticated] = useState(false);
+    const [error, setError] = useState("");
+
+    if (admin !== "admin") {
+        return <Navigate to="/" replace />;
+    }
 
     const handleLogin = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        // 🔑 Replace with your real authentication logic
         if (userId === "admin" && password === "1234") {
-            setAuthenticated(true)
-            setError("")
+            setAuthenticated(true);
+            setError("");
         } else {
-            setError("Invalid ID or Password ❌")
-            setAuthenticated(false)
+            setError("Invalid ID or Password ❌");
+            setAuthenticated(false);
         }
-    }
+    };
 
     if (!authenticated) {
         return (
-            <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+            <div className="d-flex justify-content-center align-items-center py-5 bg-light">
                 <div className="card shadow p-4" style={{ width: "22rem" }}>
                     <h2 className="text-center mb-4">Login</h2>
                     <form onSubmit={handleLogin}>
@@ -55,17 +58,17 @@ const User = () => {
                     </form>
                 </div>
             </div>
-        )
+        );
     }
 
-    // If authenticated → show Admin Panel
+    // ✅ If authenticated → show Admin Panel
     return (
         <div className="container mt-5">
-            <h1>Welcome, {params.username}</h1>
+            <h1>Welcome, Admin </h1>
             <h2 className="mt-4">🔥 Admin Panel</h2>
             <p>Here you can manage users, settings, and data.</p>
         </div>
-    )
-}
+    );
+};
 
-export default User
+export default User;
