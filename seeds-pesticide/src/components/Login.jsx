@@ -1,30 +1,56 @@
-import React from 'react';
+import React from "react";
 
 const Login = () => {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-6 rounded-2xl shadow-md w-80">
-                <h1 className="text-2xl font-bold mb-2">Login Page</h1>
-                <h4 className="text-gray-600 mb-4">Login to access your account</h4>
+        <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+            <div className="card shadow-lg p-4" style={{ width: "22rem", borderRadius: "1rem" }}>
 
-                <form className="flex flex-col space-y-3">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button
-                        type="submit"
-                        className="bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition"
-                    >
+                <h2 className="text-center mb-2">Welcome Back</h2>
+                <p className="text-muted text-center mb-4">Login to access your account</p>
+
+                <form>
+
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label fw-semibold">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            className="form-control"
+                            placeholder="Enter your email"
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label fw-semibold">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            className="form-control"
+                            placeholder="Enter your password"
+                            required
+                        />
+                    </div>
+
+
+                    <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "#28a745", border: "none" }}>
                         Login
                     </button>
                 </form>
+
+
+                <div className="d-flex align-items-center my-3">
+                    <hr className="flex-grow-1" />
+                    <span className="mx-2 text-muted">OR</span>
+                    <hr className="flex-grow-1" />
+                </div>
+
+
+                <p className="text-center text-muted mt-3">
+                    Don’t have an account?{" "}
+                    <a href="/signup" className="text-primary fw-semibold text-decoration-none">
+                        Sign Up
+                    </a>
+                </p>
             </div>
         </div>
     );
