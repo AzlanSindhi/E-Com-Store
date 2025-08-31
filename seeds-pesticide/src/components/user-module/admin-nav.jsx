@@ -22,11 +22,12 @@ const AdminNav = () => {
                         <NavLink to="/user-module/sales" className="nav-link">Sales</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/user-module/reports" className="nav-link">Reports</NavLink>
-                    </li>
-                    <li className="nav-item">
                         <NavLink to="/user-module/supplier" className="nav-link">Supplier</NavLink>
                     </li>
+                    <li className="nav-item">
+                        <NavLink to="/user-module/reports" className="nav-link">Reports</NavLink>
+                    </li>
+
                 </ul>
             </div>
         </nav>

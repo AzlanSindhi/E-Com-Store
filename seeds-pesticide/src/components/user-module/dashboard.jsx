@@ -40,22 +40,21 @@ const Dashboard = () => {
                             </NavLink>
                         </div>
                     </div>
-
-                    <div className="col-12">
-                        <div className="card bg-secondary text-white shadow text-center p-3">
-                            <h5>Reports</h5>
-                            <p className="fs-4 fw-bold">12</p>
-                            <NavLink to="/user-module/reports" className="btn btn-sm btn-outline-light">
-                                View Reports
-                            </NavLink>
-                        </div>
-                    </div>
                     <div className="col-12">
                         <div className="card bg-secondary text-white shadow text-center p-3">
                             <h5>Supplier</h5>
                             <p className="fs-4 fw-bold">6</p>
                             <NavLink to="/user-module/supplier" className="btn btn-sm btn-outline-light">
                                 View Suppliers
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className="col-12">
+                        <div className="card bg-secondary text-white shadow text-center p-3">
+                            <h5>Reports</h5>
+                            <p className="fs-4 fw-bold">9</p>
+                            <NavLink to="/user-module/reports" className="btn btn-sm btn-outline-light">
+                                View Reports
                             </NavLink>
                         </div>
                     </div>
