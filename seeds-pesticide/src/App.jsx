@@ -6,11 +6,12 @@ import Product from './components/Products'
 import User from './components/User'
 import Signup from './components/Signup'
 import Footer from './components/Footer'
-import Dashboard from "./components/admin-module/dashboard";
-import Cust from './components/admin-module/cust'
-import Products from './components/admin-module/products'
-import Sales from './components/admin-module/sales'
-import Reports from './components/admin-module/reports'
+import Dashboard from "./components/user-module/dashboard";
+import Cust from './components/user-module/cust'
+import Products from './components/user-module/products'
+import Sales from './components/user-module/sales'
+import Reports from './components/user-module/reports'
+import Suppliers from './components/user-module/supplier'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 
 const PublicLayout = () => {
@@ -55,7 +56,8 @@ function App() {
         { path: "products", element: <Products /> },
         { path: "sales", element: <Sales /> },
         { path: "reports", element: <Reports /> },
-        { path: "customers", element: <Cust /> },
+        { path: "cust", element: <Cust /> },
+        { path: "supplier", element: <Suppliers /> },
       ]
     }
   ])
