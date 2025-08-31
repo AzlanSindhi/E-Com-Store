@@ -9,7 +9,7 @@ const Dashboard = () => {
             <AdminNav />
 
             <div className="container mt-4">
-                <h2 className="mb-4">Welcome, Admin</h2>
+                <h2 className="mb-4">Welcome Admin</h2>
                 <div className="row g-4">
                     <div className="col-12">
                         <div className="card bg-secondary text-white shadow text-center p-4 h-100">

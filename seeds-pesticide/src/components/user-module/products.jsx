@@ -19,7 +19,7 @@ const Products = () => {
         <div className="bg-dark text-white min-vh-100">
             <AdminNav />
             <div className="container py-4">
-                <h2 className="mb-4">Product Management</h2>
+                <h2 className="mb-4">Products Management</h2>
 
                 <div className="table-responsive">
                     <table className="table table-dark table-striped table-hover align-middle">

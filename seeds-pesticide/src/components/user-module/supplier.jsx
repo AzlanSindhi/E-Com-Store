@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import AdminNav from "./admin-nav";
 
 const Suppliers = () => {
-    // Sample supplier data
+
     const suppliers = [
         { id: "SUP001", name: "Agro Seeds Pvt Ltd", contact: "9876543210", email: "info@agroseeds.com", address: "Nagpur, Maharashtra", products: "Wheat, Rice, Corn" },
         { id: "SUP002", name: "Green Pesticides Co", contact: "9823456789", email: "support@greenpest.com", address: "Indore, MP", products: "Neem Oil, Insect Killer" },

@@ -146,7 +146,7 @@ const Reports = () => {
                     </select>
                 </div>
 
-                {/* Sales Summary */}
+
                 <div className="row g-4 mb-4">
                     <div className="col-md-6">
                         <div className="card bg-secondary text-white text-center p-3">
@@ -162,7 +162,7 @@ const Reports = () => {
                     </div>
                 </div>
 
-                {/* Products Category Summary */}
+
                 <div className="mb-4">
                     <h4 className="mb-3">Products by Category</h4>
                     <table className="table table-dark table-striped">
@@ -183,7 +183,7 @@ const Reports = () => {
                     </table>
                 </div>
 
-                {/* Top Products */}
+
                 <div className="mb-4">
                     <h4 className="mb-3">Top Products</h4>
                     <table className="table table-dark table-striped">
