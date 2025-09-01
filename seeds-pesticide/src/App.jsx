@@ -12,6 +12,7 @@ import Products from './components/user-module/products'
 import Sales from './components/user-module/sales'
 import Reports from './components/user-module/reports'
 import Suppliers from './components/user-module/supplier'
+import SupDashboard from './components/supplier-module/sup-dashboard'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 
 const PublicLayout = () => {
@@ -59,6 +60,10 @@ function App() {
         { path: "cust", element: <Cust /> },
         { path: "supplier", element: <Suppliers /> },
       ]
+    },
+    {
+      path: "/supplier-module/sup-dashboard",
+      element: <SupDashboard />
     }
   ])
 
