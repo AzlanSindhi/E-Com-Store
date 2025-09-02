@@ -3,10 +3,10 @@ import { NavLink } from "react-router-dom";
 
 const SupplierDashboard = () => {
     return (
-        <div className="container-fluid p-0 min-vh-100"
+        <div className="container-fluid min-vh-100"
             style={{ background: "linear-gradient(to right, #e3f2fd, #bbdefb)" }}
         >
-            <div className="container mt-4">
+            <div className="container pt-3">
                 <h2 className="mb-4 fw-bold text-dark">Welcome, Supplier</h2>
                 <div className="row g-4">
 

@@ -2,10 +2,17 @@ import './App.css'
 import Nav from './components/Nav'
 import Home from './components/Home'
 import Login from './components/Login'
-import Product from './components/Products'
+import Category from './components/Category'
 import User from './components/User'
 import Signup from './components/Signup'
 import Footer from './components/Footer'
+import About from './components/About'
+import Contact from './components/Contact'
+import Seeds from './components/seeds-page'
+import Pest from './components/pest-page'
+import ProductPage from './components/Products'
+import Cart from './components/cart'
+import Checkout from './components/checkout'
 
 // User/Admin Module
 import Dashboard from "./components/user-module/dashboard";
@@ -23,6 +30,7 @@ import Orders from './components/supplier-module/orders'
 import SupplierReport from './components/supplier-module/sup-report'
 import SupLogin from './components/supplier-module/sup-login'
 import SupSignup from './components/supplier-module/sup-sign'
+import AddProduct from './components/supplier-module/addproducts'
 
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 
@@ -39,7 +47,7 @@ const PublicLayout = () => (
 
 const AdminLayout = () => (
   <div className="d-flex flex-column min-vh-100">
-    <main className="flex-grow-1 p-3 bg-light">
+    <main className="flex-grow-1 bg-light">
       <Outlet />
     </main>
   </div>
@@ -48,7 +56,7 @@ const AdminLayout = () => (
 const SupplierLayout = () => (
   <div className="d-flex flex-column min-vh-100 bg-gradient">
     <SupNav />
-    <main className="flex-grow-1 p-3">
+    <main className="flex-grow-1">
       <Outlet />
     </main>
   </div>
@@ -62,10 +70,18 @@ function App() {
       children: [
         { path: "/", element: <Home /> },
         { path: "/login", element: <Login /> },
-        { path: "/products", element: <Product /> },
+        { path: "/category", element: <Category /> },
         { path: "/signup", element: <Signup /> },
         { path: "/user/:admin", element: <User /> },
         { path: "/supplier-module/sup-login", element: <SupLogin /> },
+        { path: "/supplier-module/sup-sign", element: <SupSignup /> },
+        { path: "/about", element: <About /> },
+        { path: "/contact", element: <Contact /> },
+        { path: "/seeds", element: <Seeds /> },
+        { path: "/pest-page", element: <Pest /> },
+        { path: "/products/:category/:id", element: <ProductPage /> },
+        { path: "/cart", element: <Cart /> },
+        { path: "/checkout", element: <Checkout /> }
       ],
     },
     {
@@ -94,6 +110,7 @@ function App() {
             { path: "myproducts", element: <SupProducts /> },
             { path: "orders", element: <Orders /> },
             { path: "sup-report", element: <SupplierReport /> },
+            { path: "addproducts", element: <AddProduct /> }
           ],
         },
       ],

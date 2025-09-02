@@ -22,10 +22,10 @@ const Login = () => {
         if (!supplier) {
             setError("❌ Invalid Supplier ID or Password");
         } else if (!supplier.approved) {
-            setError("⏳ Signup request pending admin approval");
+            setError("Signup request pending admin approval");
         } else {
             setError("");
-            navigate("/orders"); // redirect to orders page
+            navigate("/supplier-module/sup-dashboard");
         }
     };
 
@@ -64,7 +64,7 @@ const Login = () => {
                     <button
                         type="button"
                         className="btn btn-outline-success w-100"
-                        onClick={() => navigate("/signup")}
+                        onClick={() => navigate("/supplier-module/sup-sign")}
                     >
                         New Supplier? Sign Up
                     </button>

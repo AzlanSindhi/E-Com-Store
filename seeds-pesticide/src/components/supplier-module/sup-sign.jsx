@@ -12,7 +12,6 @@ const Signup = () => {
     const handleSignup = (e) => {
         e.preventDefault();
         setSubmitted(true);
-        // Normally you’d send this to backend & wait for admin approval
     };
 
     if (submitted) {
@@ -27,7 +26,7 @@ const Signup = () => {
                         Your details have been submitted. Please wait for admin approval
                         before logging in.
                     </p>
-                    <button className="btn btn-success mt-3" onClick={() => navigate("/login")}>
+                    <button className="btn btn-success mt-3" onClick={() => navigate("/home")}>
                         Go to Login
                     </button>
                 </div>

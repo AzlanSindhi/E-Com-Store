@@ -15,9 +15,6 @@ const Footer = () => {
                     <NavLink className="text-white text-decoration-none" to="/contact">
                         Contact
                     </NavLink>
-                    <NavLink className="text-white text-decoration-none" to="/privacy">
-                        Privacy Policy
-                    </NavLink>
                 </div>
             </div>
         </footer>

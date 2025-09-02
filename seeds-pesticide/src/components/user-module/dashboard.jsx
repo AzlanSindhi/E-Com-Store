@@ -4,11 +4,11 @@ import AdminNav from "./admin-nav";
 
 const Dashboard = () => {
     return (
-        <div className="container-fluid p-0 bg-dark text-white min-vh-100">
+        <div className="container-fluid bg-dark text-white min-vh-100">
 
             <AdminNav />
 
-            <div className="container mt-4">
+            <div className="container mt-4 md-2">
                 <h2 className="mb-4">Welcome Admin</h2>
                 <div className="row g-4">
                     <div className="col-12">

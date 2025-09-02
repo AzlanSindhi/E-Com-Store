@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
     return (
-        <div className="d-flex align-items-center justify-content-center py-5 bg-light">
+        <div className="d-flex align-items-center justify-content-center bg-light" style={{ minHeight: "80vh" }}>
             <div className="card shadow-lg p-4" style={{ width: "22rem", borderRadius: "1rem" }}>
 
                 <h2 className="text-center mb-2">Welcome Back</h2>

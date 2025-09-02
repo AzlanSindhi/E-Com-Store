@@ -1,41 +1,17 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const MyProducts = () => {
-    // Sample Data
     const [products, setProducts] = useState([
         { id: 1, name: "Wheat Seeds", category: "Seeds", quantity: 100, price: 500 },
         { id: 2, name: "Pesticide A", category: "Pesticides", quantity: 50, price: 1200 },
         { id: 3, name: "Fertilizer X", category: "Fertilizers", quantity: 30, price: 800 },
     ]);
 
-    const [newProduct, setNewProduct] = useState({
-        name: "",
-        category: "Seeds",
-        quantity: "",
-        price: "",
-    });
-
-    // Add Product
-    const addProduct = () => {
-        if (!newProduct.name || !newProduct.quantity || !newProduct.price) return;
-        setProducts([
-            ...products,
-            {
-                id: Date.now(),
-                ...newProduct,
-                quantity: parseInt(newProduct.quantity),
-                price: parseFloat(newProduct.price),
-            },
-        ]);
-        setNewProduct({ name: "", category: "Seeds", quantity: "", price: "" });
-    };
-
-    // Delete Product
     const deleteProduct = (id) => {
         setProducts(products.filter((p) => p.id !== id));
     };
 
-    // Update Quantity
     const updateQuantity = (id, change) => {
         setProducts(
             products.map((p) =>
@@ -49,67 +25,13 @@ const MyProducts = () => {
             className="container-fluid p-4 min-vh-100"
             style={{ background: "linear-gradient(to right, #f1f8e9, #e8f5e9)" }}
         >
-            <h2 className="fw-bold text-dark mb-4">My Products</h2>
-
-            {/* Add Product Form */}
-            <div className="card p-3 shadow mb-4">
-                <h5 className="mb-3">Add New Product</h5>
-                <div className="row g-3">
-                    <div className="col-md-3">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Product Name"
-                            value={newProduct.name}
-                            onChange={(e) =>
-                                setNewProduct({ ...newProduct, name: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="col-md-2">
-                        <select
-                            className="form-select"
-                            value={newProduct.category}
-                            onChange={(e) =>
-                                setNewProduct({ ...newProduct, category: e.target.value })
-                            }
-                        >
-                            <option>Seeds</option>
-                            <option>Pesticides</option>
-                            <option>Fertilizers</option>
-                        </select>
-                    </div>
-                    <div className="col-md-2">
-                        <input
-                            type="number"
-                            className="form-control"
-                            placeholder="Quantity"
-                            value={newProduct.quantity}
-                            onChange={(e) =>
-                                setNewProduct({ ...newProduct, quantity: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <input
-                            type="number"
-                            className="form-control"
-                            placeholder="Price (₹)"
-                            value={newProduct.price}
-                            onChange={(e) =>
-                                setNewProduct({ ...newProduct, price: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="col-md-2">
-                        <button className="btn btn-success w-100" onClick={addProduct}>
-                            Add
-                        </button>
-                    </div>
-                </div>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2 className="fw-bold text-dark">My Products</h2>
+                <Link to="/supplier-module/addproducts" className="btn btn-success">
+                    + Add Product
+                </Link>
             </div>
 
-            {/* Products Table */}
             <div className="card p-3 shadow">
                 <h5 className="mb-3">Product List</h5>
                 <table className="table table-hover table-striped align-middle">

@@ -8,7 +8,7 @@ const SupplierNav = () => {
                 background: "linear-gradient(90deg, #0d47a1, #1976d2, #42a5f5)"
             }}
         >
-            <NavLink to="/supplier/dashboard" className="navbar-brand fw-bold text-white">
+            <NavLink to="/supplier-module/sup-dashboard" className="navbar-brand fw-bold text-white">
                 Supplier Panel
             </NavLink>
             <div className="collapse navbar-collapse">
