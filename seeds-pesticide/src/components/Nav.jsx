@@ -42,13 +42,13 @@ const Nav = () => {
                             </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="btn btn-warning text-dark ms-2" to="/login">
+                            <NavLink className="nav-link text-white" to="/login">
                                 Login
                             </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink to="/supplier-module/sup-dashboard" className="nav-link">
-                                Supplier Dashboard
+                            <NavLink to="/supplier-module/sup-login" className="nav-link">
+                                Become a Supplier
                             </NavLink>
                         </li>
 
