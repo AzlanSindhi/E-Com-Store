@@ -1,19 +1,30 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import AdminNav from "./admin-nav";
 
-const Users = () => {
-    const sampleUsers = [
-        { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active" },
-        { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", status: "Inactive" },
-        { id: 3, name: "David Miller", email: "david@example.com", role: "User", status: "Active" },
-        { id: 4, name: "Emily Johnson", email: "emily@example.com", role: "Moderator", status: "Active" },
-    ];
+const Customers = () => {
+    const [customers, setCustomers] = useState([]);
+
+    // Fetch data from backend
+    useEffect(() => {
+        fetch("http://localhost:5000/customers")
+            .then((res) => res.json())
+            .then((data) => setCustomers(data))
+            .catch((err) => console.error("❌ Error fetching customers:", err));
+    }, []);
+
+    // Delete handler
+    const handleRemove = async (id) => {
+        try {
+            await fetch(`http://localhost:5000/customers/${id}`, {
+                method: "DELETE",
+            });
+            setCustomers(customers.filter((c) => c._id !== id)); // update UI
+        } catch (err) {
+            console.error("❌ Error deleting:", err);
+        }
+    };
 
     return (
-
-
-
         <div className="bg-dark text-white min-vh-100">
             <AdminNav />
             <div className="container py-4">
@@ -26,32 +37,35 @@ const Users = () => {
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
+                                <th>Address</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {sampleUsers.map((user, index) => (
-                                <tr key={user.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.role}</td>
-                                    <td>
-                                        <span
-                                            className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"
-                                                }`}
-                                        >
-                                            {user.status}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-sm btn-outline-warning me-2">Edit</button>
-                                        <button className="btn btn-sm btn-outline-danger">Delete</button>
+                            {customers.length > 0 ? (
+                                customers.map((cust, index) => (
+                                    <tr key={cust._id}>
+                                        <td>{index + 1}</td>
+                                        <td>{cust.name}</td>
+                                        <td>{cust.email}</td>
+                                        <td>{cust.address}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={() => handleRemove(cust._id)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="text-center">
+                                        No customers found
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -60,4 +74,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Customers;

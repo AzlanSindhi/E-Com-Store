@@ -1,26 +1,38 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import AdminNav from "./admin-nav";
 
-const Suppliers = () => {
+const Supplier = () => {
+    const [suppliers, setSuppliers] = useState([]);
 
-    const suppliers = [
-        { id: "SUP001", name: "Agro Seeds Pvt Ltd", contact: "9876543210", email: "info@agroseeds.com", address: "Nagpur, Maharashtra", products: "Wheat, Rice, Corn" },
-        { id: "SUP002", name: "Green Pesticides Co", contact: "9823456789", email: "support@greenpest.com", address: "Indore, MP", products: "Neem Oil, Insect Killer" },
-        { id: "SUP003", name: "Farm Fresh Agro", contact: "9012345678", email: "farmfresh@agro.com", address: "Lucknow, UP", products: "Cotton Seeds, Sunflower Seeds" },
-        { id: "SUP004", name: "CropCare Pvt Ltd", contact: "9871234567", email: "sales@cropcare.com", address: "Ahmedabad, Gujarat", products: "Herbicides, Fungicides" },
-    ];
+    // Fetch supplier data from backend
+    useEffect(() => {
+        fetch("http://localhost:5000/supplier")
+            .then(res => res.json())
+            .then(data => setSuppliers(data))
+            .catch(err => console.error("❌ Error fetching suppliers:", err));
+    }, []);
+
+    // Delete supplier
+    const handleRemove = async (id) => {
+        try {
+            await fetch(`http://localhost:5000/supplier/${id}`, { method: "DELETE" });
+            setSuppliers(suppliers.filter(s => s._id !== id));
+        } catch (err) {
+            console.error("❌ Error deleting supplier:", err);
+        }
+    };
 
     return (
         <div className="bg-dark text-white min-vh-100">
             <AdminNav />
             <div className="container py-4">
-                <h2 className="mb-4">Manage Suppliers</h2>
+                <h2 className="mb-4">Supplier Management</h2>
 
                 <div className="table-responsive">
-                    <table className="table table-dark table-striped table-hover align-middle mb-0">
+                    <table className="table table-dark table-striped table-hover align-middle">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Supplier ID</th>
                                 <th>Name</th>
                                 <th>Contact</th>
@@ -31,25 +43,31 @@ const Suppliers = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {suppliers.map((supplier, index) => (
-                                <tr key={index}>
-                                    <td>{supplier.id}</td>
-                                    <td>{supplier.name}</td>
-                                    <td>{supplier.contact}</td>
-                                    <td>{supplier.email}</td>
-                                    <td>{supplier.address}</td>
-                                    <td>{supplier.products}</td>
-                                    <td>
-                                        <NavLink
-                                            to={`/user-module/supplier/${supplier.id}`}
-                                            className="btn btn-sm btn-outline-info me-2"
-                                        >
-                                            View
-                                        </NavLink>
-                                        <button className="btn btn-sm btn-outline-danger ms-1">Delete</button>
-                                    </td>
+                            {suppliers.length > 0 ? (
+                                suppliers.map((sup, index) => (
+                                    <tr key={sup._id}>
+                                        <td>{index + 1}</td>
+                                        <td>{sup.supplierId}</td>
+                                        <td>{sup.name}</td>
+                                        <td>{sup.contact}</td>
+                                        <td>{sup.email}</td>
+                                        <td>{sup.address}</td>
+                                        <td>{Array.isArray(sup.productsSupplied) ? sup.productsSupplied.join(", ") : sup.productsSupplied}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={() => handleRemove(sup._id)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="8" className="text-center">No suppliers found</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -58,4 +76,4 @@ const Suppliers = () => {
     );
 };
 
-export default Suppliers;
+export default Supplier;

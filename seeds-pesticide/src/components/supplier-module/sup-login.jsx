@@ -7,7 +7,6 @@ const Login = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    // Fake DB for demo
     const suppliers = [
         { id: "SUP123", password: "12345", approved: true },
         { id: "SUP456", password: "67890", approved: false },

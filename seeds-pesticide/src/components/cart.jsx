@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const Cart = () => {
-    // Dummy cart data (later from context / DB)
+
     const [cartItems, setCartItems] = useState([
         {
             id: 1,
@@ -25,12 +25,10 @@ const Cart = () => {
         }
     ]);
 
-    // Handle remove item
     const removeItem = (id) => {
         setCartItems(cartItems.filter((item) => item.id !== id));
     };
 
-    // Handle quantity increase/decrease
     const updateCount = (id, type) => {
         setCartItems(
             cartItems.map((item) =>
@@ -49,7 +47,6 @@ const Cart = () => {
         );
     };
 
-    // Calculate total
     const totalPrice = cartItems.reduce(
         (sum, item) => sum + item.price * item.count,
         0
@@ -118,7 +115,7 @@ const Cart = () => {
                         ))}
                     </div>
 
-                    {/* Cart Summary */}
+
                     <div className="col-md-4">
                         <div className="card shadow-lg p-3 border-0">
                             <h5 className="fw-bold text-success">Cart Summary</h5>

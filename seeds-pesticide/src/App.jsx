@@ -1,6 +1,6 @@
 import './App.css'
 import Nav from './components/Nav'
-import Home from './components/Home'
+import Home from './components/home'
 import Login from './components/Login'
 import Category from './components/Category'
 import User from './components/User'

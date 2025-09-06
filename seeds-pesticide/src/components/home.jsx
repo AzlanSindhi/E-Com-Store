@@ -17,7 +17,7 @@ const Home = () => {
                                 🌱 Grow More, Worry Less — <strong>FarmBasket</strong> Delivers
                                 Success!
                             </p>
-                            <a href="/products" className="btn btn-success btn-lg fw-bold">
+                            <a href="/Category" className="btn btn-success btn-lg fw-bold">
                                 Browse Products 🚜
                             </a>
                         </div>
@@ -78,7 +78,7 @@ const Home = () => {
                     Buy our premium seeds and pesticides to ensure better crop growth and
                     protection.
                 </p>
-                <a href="/products" className="btn btn-light btn-lg fw-bold">
+                <a href="/Category" className="btn btn-light btn-lg fw-bold">
                     Shop Now 🌾
                 </a>
             </section>
