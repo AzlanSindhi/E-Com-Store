@@ -1,6 +1,9 @@
 {
     "scripts": {
-        "start": "node server.js",
-        "dev": "nodemon server.js"
+        "dev": "nodemon src/components/backend/server.js",
+        "start": "node src/components/backend/server.js"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
     }
 }

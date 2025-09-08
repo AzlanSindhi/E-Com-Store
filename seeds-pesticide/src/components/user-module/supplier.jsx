@@ -47,12 +47,12 @@ const Supplier = () => {
                                 suppliers.map((sup, index) => (
                                     <tr key={sup._id}>
                                         <td>{index + 1}</td>
-                                        <td>{sup.supplierId}</td>
+                                        <td>{sup.supplier_id}</td>
                                         <td>{sup.name}</td>
                                         <td>{sup.contact}</td>
                                         <td>{sup.email}</td>
                                         <td>{sup.address}</td>
-                                        <td>{Array.isArray(sup.productsSupplied) ? sup.productsSupplied.join(", ") : sup.productsSupplied}</td>
+                                        <td>{Array.isArray(sup.products_supplied) ? sup.products_supplied.join(", ") : sup.products_supplied}</td>
                                         <td>
                                             <button
                                                 className="btn btn-sm btn-outline-danger"

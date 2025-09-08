@@ -1,15 +1,26 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import AdminNav from "./admin-nav";
 
 const Sales = () => {
-    const sampleSales = [
-        { id: 1, product: "Wheat Seeds", category: "Seeds", quantity: 10, amount: 15000, date: "2025-08-01", customer: "John Doe" },
-        { id: 2, product: "Rice Seeds", category: "Seeds", quantity: 5, amount: 6000, date: "2025-08-03", customer: "Jane Smith" },
-        { id: 3, product: "Neem Oil Spray", category: "Pesticides", quantity: 12, amount: 8400, date: "2025-08-05", customer: "David Miller" },
-        { id: 4, product: "Chemical Pesticide", category: "Pesticides", quantity: 3, amount: 4500, date: "2025-08-07", customer: "Emily Johnson" },
-        { id: 5, product: "Corn Seeds", category: "Seeds", quantity: 8, amount: 14400, date: "2025-08-10", customer: "Michael Brown" },
-    ];
+    const [sales, setSales] = useState([]);
+
+    // fetch sales data
+    useEffect(() => {
+        fetch("http://localhost:5000/sales")
+            .then((res) => res.json())
+            .then((data) => setSales(data))
+            .catch((err) => console.error("❌ Error fetching sales:", err));
+    }, []);
+
+    // delete sale
+    const handleRemove = async (id) => {
+        try {
+            await fetch(`http://localhost:5000/sales/${id}`, { method: "DELETE" });
+            setSales(sales.filter((s) => s._id !== id));
+        } catch (err) {
+            console.error("❌ Error deleting sale:", err);
+        }
+    };
 
     return (
         <div className="bg-dark text-white min-vh-100">
@@ -32,27 +43,31 @@ const Sales = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sampleSales.map((sale, index) => (
-                                <tr key={sale.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{sale.product}</td>
-                                    <td>{sale.category}</td>
-                                    <td>{sale.quantity}</td>
-                                    <td>{sale.amount.toLocaleString()}</td>
-                                    <td>{sale.date}</td>
-                                    <td>{sale.customer}</td>
-                                    <td>
-                                        <NavLink
-                                            to={`/user-module/sales/${sale.id}`}
-                                            className="btn btn-sm btn-outline-info me-2"
-                                        >
-                                            View
-                                        </NavLink>
-                                        <button className="btn btn-sm btn-outline-warning me-2">Edit</button>
-                                        <button className="btn btn-sm btn-outline-danger">Delete</button>
-                                    </td>
+                            {sales.length > 0 ? (
+                                sales.map((sale, index) => (
+                                    <tr key={sale._id}>
+                                        <td>{index + 1}</td>
+                                        <td>{sale.Product}</td>
+                                        <td>{sale.Category}</td>
+                                        <td>{sale.Quantity}</td>
+                                        <td>{sale.Amount}</td>
+                                        <td>{sale.Date}</td>
+                                        <td>{sale.Customer}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={() => handleRemove(sale._id)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="8" className="text-center">No sales found</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

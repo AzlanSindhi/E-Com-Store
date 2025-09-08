@@ -1,10 +1,11 @@
 import React from "react";
 import heroImage from "../assets/Hero-Test1.jpeg";
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 const Home = () => {
     return (
         <div>
+            {/* Hero Section */}
             <section className="py-5 bg-light" id="home">
                 <div className="container">
                     <div className="row align-items-center">
@@ -17,9 +18,10 @@ const Home = () => {
                                 🌱 Grow More, Worry Less — <strong>FarmBasket</strong> Delivers
                                 Success!
                             </p>
-                            <a href="/Category" className="btn btn-success btn-lg fw-bold">
+                            {/* ✅ Changed to NavLink */}
+                            <NavLink to="/category" className="btn btn-success btn-lg fw-bold">
                                 Browse Products 🚜
-                            </a>
+                            </NavLink>
                         </div>
 
                         <div className="col-md-6 text-center mt-4 mt-md-0">
@@ -34,6 +36,7 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* Features Section */}
             <section className="container my-5">
                 <div className="row text-center">
                     <div className="col-md-4 mb-4">
@@ -72,18 +75,18 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* CTA Section */}
             <section className="text-center p-5 bg-success text-white shadow-sm">
                 <h2 className="fw-bold mb-3">Start Your Farming Journey Today!</h2>
                 <p className="lead mb-4">
                     Buy our premium seeds and pesticides to ensure better crop growth and
                     protection.
                 </p>
-                <a href="/Category" className="btn btn-light btn-lg fw-bold">
+                {/* ✅ Changed to NavLink */}
+                <NavLink to="/category" className="btn btn-light btn-lg fw-bold">
                     Shop Now 🌾
-                </a>
+                </NavLink>
             </section>
-
-
         </div>
     );
 };

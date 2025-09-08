@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AdminNav from "./admin-nav";
-
 
 const Reports = () => {
     const months = [
@@ -10,120 +9,19 @@ const Reports = () => {
     ];
     const currentMonth = new Date().toLocaleString('default', { month: 'long' });
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [report, setReport] = useState({
+        totalSalesAmount: 0,
+        totalOrders: 0,
+        productsSummary: [],
+        topProducts: []
+    });
 
-    const monthlyReports = {
-        January: {
-            sales: "₹10,000",
-            orders: 25,
-            productsSummary: [
-                { category: "Seeds", count: 10 },
-                { category: "Pesticides", count: 5 }
-            ],
-            topProducts: [
-                { name: "Wheat Seeds", sales: "₹5,000" },
-                { name: "Neem Pesticide", sales: "₹3,000" }
-            ]
-        },
-        February: {
-            sales: "₹12,500",
-            orders: 30,
-            productsSummary: [
-                { category: "Seeds", count: 12 },
-                { category: "Pesticides", count: 6 }
-            ],
-            topProducts: [
-                { name: "Organic Fertilizer", sales: "₹7,000" },
-                { name: "Wheat Seeds", sales: "₹4,500" }
-            ]
-        },
-        March: {
-            sales: "₹18,000",
-            orders: 45,
-            productsSummary: [
-                { category: "Seeds", count: 15 },
-                { category: "Pesticides", count: 8 }
-            ],
-            topProducts: [
-                { name: "Neem Pesticide", sales: "₹8,500" },
-                { name: "Corn Seeds", sales: "₹6,000" }
-            ]
-        },
-        April: {
-            sales: "₹20,000",
-            orders: 50,
-            productsSummary: [
-                { category: "Seeds", count: 20 },
-                { category: "Pesticides", count: 10 }
-            ],
-            topProducts: [
-                { name: "Rice Seeds", sales: "₹9,000" },
-                { name: "Organic Fertilizer", sales: "₹7,500" }
-            ]
-        },
-        May: {
-            sales: "₹22,000",
-            orders: 55,
-            productsSummary: [
-                { category: "Seeds", count: 22 },
-                { category: "Pesticides", count: 12 }
-            ],
-            topProducts: [
-                { name: "Hybrid Maize Seeds", sales: "₹10,000" },
-                { name: "Neem Pesticide", sales: "₹7,000" }
-            ]
-        },
-        June: {
-            sales: "₹19,500",
-            orders: 48,
-            productsSummary: [
-                { category: "Seeds", count: 18 },
-                { category: "Pesticides", count: 10 }
-            ],
-            topProducts: [
-                { name: "Wheat Seeds", sales: "₹8,000" },
-                { name: "Organic Fertilizer", sales: "₹6,500" }
-            ]
-        },
-        July: {
-            sales: "₹25,000",
-            orders: 60,
-            productsSummary: [
-                { category: "Seeds", count: 25 },
-                { category: "Pesticides", count: 12 }
-            ],
-            topProducts: [
-                { name: "Rice Seeds", sales: "₹11,000" },
-                { name: "Neem Pesticide", sales: "₹8,500" }
-            ]
-        },
-        August: {
-            sales: "₹28,000",
-            orders: 70,
-            productsSummary: [
-                { category: "Seeds", count: 28 },
-                { category: "Pesticides", count: 14 }
-            ],
-            topProducts: [
-                { name: "Corn Seeds", sales: "₹12,000" },
-                { name: "Organic Fertilizer", sales: "₹9,000" }
-            ]
-        },
-        September: {
-            sales: "₹24,000",
-            orders: 58,
-            productsSummary: [
-                { category: "Seeds", count: 23 },
-                { category: "Pesticides", count: 12 }
-            ],
-            topProducts: [
-                { name: "Wheat Seeds", sales: "₹10,500" },
-                { name: "Hybrid Maize Seeds", sales: "₹8,000" }
-            ]
-        }
-
-    };
-
-    const report = monthlyReports[selectedMonth];
+    useEffect(() => {
+        fetch(`http://localhost:5000/reports/${selectedMonth}`)
+            .then(res => res.json())
+            .then(data => setReport(data))
+            .catch(err => console.error("Error fetching report:", err));
+    }, [selectedMonth]);
 
     return (
         <div className="container-fluid bg-dark text-white min-vh-100 py-4">
@@ -146,22 +44,20 @@ const Reports = () => {
                     </select>
                 </div>
 
-
                 <div className="row g-4 mb-4">
                     <div className="col-md-6">
                         <div className="card bg-secondary text-white text-center p-3">
-                            <h5>Total Sales</h5>
-                            <p className="fs-4 fw-bold">{report.sales}</p>
+                            <h5>Total Sales Amount</h5>
+                            <p className="fs-4 fw-bold">₹{report.totalSalesAmount.toLocaleString()}</p>
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="card bg-secondary text-white text-center p-3">
                             <h5>Total Orders</h5>
-                            <p className="fs-4 fw-bold">{report.orders}</p>
+                            <p className="fs-4 fw-bold">{report.totalOrders}</p>
                         </div>
                     </div>
                 </div>
-
 
                 <div className="mb-4">
                     <h4 className="mb-3">Products by Category</h4>
@@ -169,7 +65,7 @@ const Reports = () => {
                         <thead>
                             <tr>
                                 <th>Category</th>
-                                <th>Number of Products</th>
+                                <th>Number of Products Sold</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -183,21 +79,20 @@ const Reports = () => {
                     </table>
                 </div>
 
-
                 <div className="mb-4">
                     <h4 className="mb-3">Top Products</h4>
                     <table className="table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th>Product</th>
-                                <th>Sales</th>
+                                <th>Sales Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             {report.topProducts.map((product, index) => (
                                 <tr key={index}>
                                     <td>{product.name}</td>
-                                    <td>{product.sales}</td>
+                                    <td>₹{product.sales.toLocaleString()}</td>
                                 </tr>
                             ))}
                         </tbody>
