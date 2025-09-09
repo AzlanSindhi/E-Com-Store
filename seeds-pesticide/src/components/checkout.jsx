@@ -1,11 +1,20 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const Checkout = () => {
-    // Dummy cart data (later use Context / DB)
-    const [cartItems] = useState([
-        { id: 1, name: "Wheat Seeds", price: 500, quantity: "10kg", count: 1 },
-        { id: 2, name: "Neem Oil", price: 350, quantity: "1 litre", count: 2 }
-    ]);
+    const location = useLocation();
+    const { product } = location.state || {}; // ✅ get product from navigation
+
+    // If product is not passed, fallback to empty array
+    const cartItems = product
+        ? [{ 
+            id: product._id, 
+            name: product.product_name, 
+            price: product.price, 
+            quantity: product.quantity || "1 unit", 
+            count: 1 
+        }]
+        : [];
 
     // Form state
     const [formData, setFormData] = useState({
@@ -13,7 +22,7 @@ const Checkout = () => {
         email: "",
         phone: "",
         address: "",
-        payment: "COD" // default payment method
+        payment: "COD"
     });
 
     // Calculate total
@@ -116,17 +125,21 @@ const Checkout = () => {
                 <div className="col-md-5">
                     <div className="card shadow-lg p-4 border-0">
                         <h5 className="fw-bold text-success mb-3">Order Summary</h5>
-                        {cartItems.map((item) => (
-                            <div
-                                key={item.id}
-                                className="d-flex justify-content-between align-items-center mb-2"
-                            >
-                                <div>
-                                    <strong>{item.name}</strong> ({item.quantity}) × {item.count}
+                        {cartItems.length > 0 ? (
+                            cartItems.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="d-flex justify-content-between align-items-center mb-2"
+                                >
+                                    <div>
+                                        <strong>{item.name}</strong> ({item.quantity}) × {item.count}
+                                    </div>
+                                    <div>₹{item.price * item.count}</div>
                                 </div>
-                                <div>₹{item.price * item.count}</div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p className="text-muted">No items in cart</p>
+                        )}
                         <hr />
                         <div className="d-flex justify-content-between fw-bold">
                             <span>Total</span>

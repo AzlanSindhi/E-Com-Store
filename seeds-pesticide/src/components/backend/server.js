@@ -287,6 +287,31 @@ app.get("/reports/:month", async (req, res) => {
     }
 });
 
+/* ------------------- Cust Master ------------------- */
+const CustMasterSchema = new mongoose.Schema({
+    cust_name: String,
+    email: String,
+    password: String,
+});
+
+const CustMaster = mongoose.model("CustMaster", CustMasterSchema, "cust_master");
+
+// ✅ Login API
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await CustMaster.findOne({ email, password });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+        res.json({ message: "Login successful", cust_name: user.cust_name });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 /* ------------------- Server ------------------- */
 const PORT = 5000;
 app.listen(PORT, () =>

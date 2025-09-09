@@ -5,7 +5,6 @@ const PestPage = () => {
     const navigate = useNavigate();
     const [pests, setPests] = useState([]);
 
-    // fetch pesticide products from backend
     useEffect(() => {
         fetch("http://localhost:5000/products/type/Pesticides")
             .then(res => res.json())
@@ -42,7 +41,11 @@ const PestPage = () => {
                                         >
                                             View Product
                                         </button>
-                                        <button className="btn btn-success">Buy Now</button>
+                                         <button
+                                            className="btn btn-success"
+                                            onClick={() => navigate("/checkout", { state: { product: pest } })} >
+                                            Buy Now
+                                        </button>
                                     </div>
                                 </div>
                             </div>

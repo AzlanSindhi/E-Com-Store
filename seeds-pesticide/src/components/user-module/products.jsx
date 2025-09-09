@@ -53,14 +53,11 @@ const Products = () => {
                                     <td>{product.supplier_id}</td>
                                     <td>
                                         <NavLink
-                                            to={`/user-module/products/${product._id}`}
+                                            to={`../../products/${product.category}/${product._id}`}
                                             className="btn btn-sm btn-outline-info me-2"
                                         >
                                             View
                                         </NavLink>
-                                        <button className="btn btn-sm btn-outline-warning me-2">
-                                            Edit
-                                        </button>
                                         <button className="btn btn-sm btn-outline-danger">
                                             Delete
                                         </button>
