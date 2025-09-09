@@ -286,7 +286,6 @@ app.get("/reports/:month", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 /* ------------------- Cust Master ------------------- */
 const CustMasterSchema = new mongoose.Schema({
     cust_name: String,
@@ -296,7 +295,7 @@ const CustMasterSchema = new mongoose.Schema({
 
 const CustMaster = mongoose.model("CustMaster", CustMasterSchema, "cust_master");
 
-// ✅ Login API
+// ✅ Customer Login API
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -311,7 +310,37 @@ app.post("/login", async (req, res) => {
     }
 });
 
+/* ------------------- Supplier Master ------------------- */
+const SupMasterSchema = new mongoose.Schema({
+    sup_id: String,          // e.g., SUP123
+    supplier_name: String,   // Supplier’s full name
+    email: String,
+    password: String
+});
 
+// ✅ exact collection name in MongoDB
+const SupMaster = mongoose.model("SupMaster", SupMasterSchema, "supplier_master");
+
+// ✅ Supplier Login API
+app.post("/supplier-module/sup-login", async (req, res) => {
+    const { sup_id, password } = req.body;
+
+    try {
+        const supplier = await SupMaster.findOne({ sup_id, password });
+        if (!supplier) {
+            return res.status(401).json({ message: "❌ Invalid Supplier ID or Password" });
+        }
+
+        res.json({
+            message: "✅ Login successful",
+            sup_id: supplier.sup_id,
+            supplier_name: supplier.supplier_name,
+            email: supplier.email
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 /* ------------------- Server ------------------- */
 const PORT = 5000;
 app.listen(PORT, () =>

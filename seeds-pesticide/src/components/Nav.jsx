@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
+
+import logo from "../../public/FB-Logo.svg";
+import rope from "../assets/rope.png";
+
 const Nav = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Load user from localStorage on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -25,12 +28,13 @@ const Nav = () => {
       style={{ backgroundColor: "#19871bff" }}
     >
       <div className="container">
+        
         <NavLink
           className="d-flex align-items-center navbar-brand text-warning fw-bold"
           to="/"
         >
           <img
-            src="/FB-Logo.svg"
+            src={logo}
             className="img-fluid me-2"
             alt="FarmBasket Logo"
             style={{ height: "50px" }}
@@ -38,6 +42,7 @@ const Nav = () => {
           FarmBasket
         </NavLink>
 
+        
         <button
           className="navbar-toggler"
           type="button"
@@ -47,7 +52,13 @@ const Nav = () => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span>
+            <img
+              src={rope}
+              alt="Rope"
+              style={{ width: "30px", height: "30px"}}
+            />
+          </span>
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
@@ -68,7 +79,6 @@ const Nav = () => {
                   <span className="nav-link text-white">
                     Welcome, {user.name}
                   </span>
-                 
                 </>
               ) : (
                 <NavLink className="nav-link text-white" to="/login">
@@ -83,11 +93,11 @@ const Nav = () => {
             </li>
             <li>
               <button
-                    className="btn btn-sm btn-danger"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
+                className="btn btn-sm btn-danger"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
             </li>
           </ul>
         </div>
