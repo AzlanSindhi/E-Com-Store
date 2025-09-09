@@ -44,7 +44,7 @@ const Customers = () => {
                         <tbody>
                             {customers.length > 0 ? (
                                 customers.map((cust, index) => (
-                                    <tr key={cust._id}>
+                                    <tr key={cust.id}>
                                         <td>{index + 1}</td>
                                         <td>{cust.name}</td>
                                         <td>{cust.email}</td>

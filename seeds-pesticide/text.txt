@@ -1,3 +1,4 @@
 cd seeds-pesticide
 npm run dev
-node src/components/backend.server.js
+cd seeds-pesticide
+node src/components/backend/server.js

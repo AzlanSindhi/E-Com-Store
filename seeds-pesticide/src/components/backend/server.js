@@ -17,6 +17,7 @@ mongoose.connect(
 
 /* ------------------- Customers ------------------- */
 const CustomerSchema = new mongoose.Schema({
+    id : Number,
     name: String,
     email: String,
     address: String,
@@ -341,6 +342,50 @@ app.post("/supplier-module/sup-login", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+/* ------------------- Signup ------------------- */
+app.post("/signup", async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        // Check if user already exists
+        const existing = await CustMaster.findOne({ email });
+        if (existing) {
+            return res.status(400).json({ message: "❌ Email already registered" });
+        }
+
+        // Generate cust_id (like CUST001, CUST002...)
+        const count = await CustMaster.countDocuments();
+        const cust_id = `CUS${(count + 1).toString().padStart(3, "0")}`;
+
+        // Save in cust_master
+        const newCustMaster = new CustMaster({
+            cust_id,
+            cust_name: name,
+            email,
+            password,
+            id: cust_id,   // duplicate field
+            name           // duplicate field
+        });
+        await newCustMaster.save();
+
+        // Save in customers table
+        const newCustomer = new Customer({
+            id: cust_id,
+            name,
+            email,
+            address: ""  // initially empty
+        });
+        await newCustomer.save();
+
+        res.json({ message: "✅ Signup successful", cust_id, cust_name: name });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 /* ------------------- Server ------------------- */
 const PORT = 5000;
 app.listen(PORT, () =>
