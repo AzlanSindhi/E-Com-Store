@@ -23,10 +23,10 @@ const Login = () => {
         // ✅ Save user in localStorage
         localStorage.setItem(
           "user",
-          JSON.stringify({ name: data.cust_name, email })
+          JSON.stringify({ name: data.name, email })
         );
 
-        setMessage(`Welcome ${data.cust_name}`);
+        setMessage(`Welcome ${data.name}`);
 
         // redirect to home
         navigate("/");

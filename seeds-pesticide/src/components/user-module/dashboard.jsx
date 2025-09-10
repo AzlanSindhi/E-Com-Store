@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AdminNav from "./admin-nav";
+import Nav from "../Nav";
 
 const Dashboard = () => {
     const [stats, setStats] = useState({
@@ -23,7 +24,10 @@ const Dashboard = () => {
         <div className="container-fluid bg-dark text-white min-vh-100">
             <AdminNav />
             <div className="container mt-4 md-2">
-                <h2 className="mb-4">Welcome Admin</h2>
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                    <h2 className="mb-0">Welcome Admin</h2>
+                    <NavLink to="/" className="btn btn-sm btn-outline-light">Back to Home</NavLink>
+                </div>
                 <div className="row g-4 pd-3">
 
                     {/* Customers */}
@@ -81,7 +85,6 @@ const Dashboard = () => {
                             </NavLink>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

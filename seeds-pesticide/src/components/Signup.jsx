@@ -28,10 +28,10 @@ const Signup = () => {
                 password: formData.password
             });
 
-            alert(res.data.message);
+            alert(res.data.message || "Signup successful!");
         } catch (err) {
             console.error("❌ Signup error:", err);
-            alert("Signup failed!");
+            alert(err.response?.data?.message || "Signup failed!");
         }
     };
 

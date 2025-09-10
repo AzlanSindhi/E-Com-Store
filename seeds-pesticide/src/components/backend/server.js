@@ -17,7 +17,7 @@ mongoose.connect(
 
 /* ------------------- Customers ------------------- */
 const CustomerSchema = new mongoose.Schema({
-    id : Number,
+    id : String,   // changed from Number → String
     name: String,
     email: String,
     address: String,
@@ -52,7 +52,6 @@ const SupplierSchema = new mongoose.Schema({
     products_supplied: [String], // array of product names
 });
 
-// force Mongoose to use exact "supplier" collection
 const Supplier = mongoose.model("Supplier", SupplierSchema, "supplier");
 
 app.get("/supplier", async (req, res) => {
@@ -83,7 +82,6 @@ const ProductSchema = new mongoose.Schema({
     supplier_id: String,
 });
 
-// ✅ exact collection "products"
 const Product = mongoose.model("products", ProductSchema, "products");
 
 // fetch all products
@@ -141,7 +139,8 @@ app.delete("/products/:id", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-// fetch products by type (e.g., pesticides, seeds)
+
+// fetch products by type
 app.get("/products/type/:type", async (req, res) => {
     try {
         const products = await Product.find({ type: req.params.type });
@@ -151,30 +150,18 @@ app.get("/products/type/:type", async (req, res) => {
     }
 });
 
-// fetch one product by ID
-app.get("/products/:id", async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);
-        if (!product) return res.status(404).json({ error: "Product not found" });
-        res.json(product);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 /* ------------------- Sales ------------------- */
 const SalesSchema = new mongoose.Schema({
-    Product: String,       // Product name
-    Category: String,      // Seeds / Pesticides
-    Quantity: Number,      // Quantity sold
-    Amount: Number,        // Total sale amount
-    Date: String,  // Sale date
-    Customer: String       // Customer name
+    Product: String,
+    Category: String,
+    Quantity: Number,
+    Amount: Number,
+    Date: String,
+    Customer: String
 });
 
-// force mongoose to use "sales" collection
 const Sales = mongoose.model("Sales", SalesSchema, "sales");
 
-// fetch all sales
 app.get("/sales", async (req, res) => {
     try {
         const sales = await Sales.find();
@@ -184,7 +171,6 @@ app.get("/sales", async (req, res) => {
     }
 });
 
-// add new sale
 app.post("/sales", async (req, res) => {
     try {
         const newSale = new Sales(req.body);
@@ -195,7 +181,6 @@ app.post("/sales", async (req, res) => {
     }
 });
 
-// delete sale
 app.delete("/sales/:id", async (req, res) => {
     try {
         await Sales.findByIdAndDelete(req.params.id);
@@ -204,6 +189,7 @@ app.delete("/sales/:id", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 /* ------------------- Dashboard Stats ------------------- */
 app.get("/dashboard-stats", async (req, res) => {
     try {
@@ -212,13 +198,12 @@ app.get("/dashboard-stats", async (req, res) => {
         const productCount = await Product.countDocuments();
         const salesCount = await Sales.countDocuments();
 
-        // Total sales amount (ensure Amount field is string/number)
         const totalSalesAmountAgg = await Sales.aggregate([
             { $group: { _id: null, totalAmount: { $sum: { $toDouble: "$Amount" } } } }
         ]);
         const totalSalesAmount = totalSalesAmountAgg[0]?.totalAmount || 0;
 
-        const reportCount = 9; // Fixed, or you can compute dynamically if needed
+        const reportCount = 9; // fixed number for now
 
         res.json({
             customers: customerCount,
@@ -234,7 +219,6 @@ app.get("/dashboard-stats", async (req, res) => {
     }
 });
 
-
 /* ------------------- Reports ------------------- */
 app.get("/reports/:month", async (req, res) => {
     try {
@@ -245,22 +229,17 @@ app.get("/reports/:month", async (req, res) => {
         const monthIndex = monthNames.indexOf(req.params.month);
         if (monthIndex === -1) return res.status(400).json({ error: "Invalid month" });
 
-        const year = 2025; // set your year
+        const year = 2025;
         const startDate = new Date(year, monthIndex, 1);
         const endDate = new Date(year, monthIndex + 1, 0, 23, 59, 59);
 
-        // Fetch sales in that month
         const salesInMonth = await Sales.find({
             Date: { $gte: startDate.toISOString(), $lte: endDate.toISOString() }
         });
 
-        // Total sales amount
         const totalSalesAmount = salesInMonth.reduce((sum, sale) => sum + Number(sale.Amount), 0);
-
-        // Total orders
         const totalOrders = salesInMonth.length;
 
-        // Products summary by category
         const productsSummaryMap = {};
         salesInMonth.forEach(sale => {
             productsSummaryMap[sale.Category] = (productsSummaryMap[sale.Category] || 0) + sale.Quantity;
@@ -270,7 +249,6 @@ app.get("/reports/:month", async (req, res) => {
             count: productsSummaryMap[key]
         }));
 
-        // Top products by sales amount
         const productMap = {};
         salesInMonth.forEach(sale => {
             productMap[sale.Product] = (productMap[sale.Product] || 0) + Number(sale.Amount);
@@ -278,17 +256,18 @@ app.get("/reports/:month", async (req, res) => {
         const topProducts = Object.entries(productMap)
             .map(([name, sales]) => ({ name, sales }))
             .sort((a, b) => b.sales - a.sales)
-            .slice(0, 5); // top 5 products
+            .slice(0, 5);
 
         res.json({ totalSalesAmount, totalOrders, productsSummary, topProducts });
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
+
 /* ------------------- Cust Master ------------------- */
 const CustMasterSchema = new mongoose.Schema({
+    cust_id: String,   // added field
     cust_name: String,
     email: String,
     password: String,
@@ -296,10 +275,8 @@ const CustMasterSchema = new mongoose.Schema({
 
 const CustMaster = mongoose.model("CustMaster", CustMasterSchema, "cust_master");
 
-// ✅ Customer Login API
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
-
     try {
         const user = await CustMaster.findOne({ email, password });
         if (!user) {
@@ -313,25 +290,21 @@ app.post("/login", async (req, res) => {
 
 /* ------------------- Supplier Master ------------------- */
 const SupMasterSchema = new mongoose.Schema({
-    sup_id: String,          // e.g., SUP123
-    supplier_name: String,   // Supplier’s full name
+    sup_id: String,
+    supplier_name: String,
     email: String,
     password: String
 });
 
-// ✅ exact collection name in MongoDB
 const SupMaster = mongoose.model("SupMaster", SupMasterSchema, "supplier_master");
 
-// ✅ Supplier Login API
 app.post("/supplier-module/sup-login", async (req, res) => {
     const { sup_id, password } = req.body;
-
     try {
         const supplier = await SupMaster.findOne({ sup_id, password });
         if (!supplier) {
             return res.status(401).json({ message: "❌ Invalid Supplier ID or Password" });
         }
-
         res.json({
             message: "✅ Login successful",
             sup_id: supplier.sup_id,
@@ -342,49 +315,41 @@ app.post("/supplier-module/sup-login", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
-/* ------------------- Signup ------------------- */
 app.post("/signup", async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        // Check if user already exists
+        console.log("📥 Incoming signup:", req.body); // log request
+
         const existing = await CustMaster.findOne({ email });
         if (existing) {
             return res.status(400).json({ message: "❌ Email already registered" });
         }
 
-        // Generate cust_id (like CUST001, CUST002...)
         const count = await CustMaster.countDocuments();
         const cust_id = `CUS${(count + 1).toString().padStart(3, "0")}`;
 
-        // Save in cust_master
         const newCustMaster = new CustMaster({
             cust_id,
             cust_name: name,
             email,
             password,
-            id: cust_id,   // duplicate field
-            name           // duplicate field
         });
         await newCustMaster.save();
 
-        // Save in customers table
         const newCustomer = new Customer({
             id: cust_id,
             name,
             email,
-            address: ""  // initially empty
         });
         await newCustomer.save();
 
         res.json({ message: "✅ Signup successful", cust_id, cust_name: name });
     } catch (err) {
-        console.error(err);
+        console.error("❌ Signup error (backend):", err); // full error
         res.status(500).json({ error: err.message });
     }
 });
-
 
 /* ------------------- Server ------------------- */
 const PORT = 5000;
