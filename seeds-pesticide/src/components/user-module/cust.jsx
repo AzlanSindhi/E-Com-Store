@@ -38,6 +38,7 @@ const Customers = () => {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Address</th>
+                                <th>DOB</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -49,6 +50,7 @@ const Customers = () => {
                                         <td>{cust.name}</td>
                                         <td>{cust.email}</td>
                                         <td>{cust.address}</td>
+                                        <td>{cust.dob}</td>
                                         <td>
                                             <button
                                                 className="btn btn-sm btn-outline-danger"

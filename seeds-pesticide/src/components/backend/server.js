@@ -1,358 +1,136 @@
-// server.js
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+const SupplierDashboard = () => {
+  const [supplier, setSupplier] = useState(null);
+  const [stats, setStats] = useState({
+    products: 0,
+    pendingOrders: 0,
+    deliveredOrders: 0,
+    totalEarnings: 0,
+    lowStock: 0,
+    reports: 0,
+    topProducts: [],
+    monthlyOrders: 0,
+    monthlyEarnings: 0
+  });
+  const [recentOrders, setRecentOrders] = useState([]);
+  const navigate = useNavigate();
 
-// ✅ connect to "project" DB
-mongoose.connect(
-    "mongodb+srv://studyazlan84_db_user:azlan_84@cluster0.gzaqxub.mongodb.net/project?retryWrites=true&w=majority&appName=Cluster0",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-)
-    .then(() => console.log("✅ MongoDB connected"))
-    .catch(err => console.error("❌ DB connection error:", err));
+  useEffect(() => {
+    const storedSupplier = localStorage.getItem("supplier");
+    if (!storedSupplier) return navigate("/supplier-module/sup-login");
 
-/* ------------------- Customers ------------------- */
-const CustomerSchema = new mongoose.Schema({
-    id : String,   // changed from Number → String
-    name: String,
-    email: String,
-    address: String,
-});
-const Customer = mongoose.model("Customer", CustomerSchema, "customers");
+    const sup = JSON.parse(storedSupplier);
+    setSupplier(sup);
 
-app.get("/customers", async (req, res) => {
-    try {
-        const customers = await Customer.find();
-        res.json(customers);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+    // ✅ Fetch products
+    fetch(`http://localhost:5000/products/supplier/${sup.sup_id}`)
+      .then(res => res.json())
+      .then(data => {
+        const lowStock = data.filter(p => p.stocks < 10);
+        setStats(prev => ({
+          ...prev,
+          products: data.length,
+          lowStock: lowStock.length
+        }));
+      });
 
-app.delete("/customers/:id", async (req, res) => {
-    try {
-        await Customer.findByIdAndDelete(req.params.id);
-        res.json({ message: "Customer deleted" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+    // ✅ Fetch orders
+    fetch(`http://localhost:5000/orders?sup_id=${sup.sup_id}`)
+      .then(res => res.json())
+      .then(data => {
+        const pending = data.filter(o => o.status === "Pending").length;
+        const delivered = data.filter(o => o.status === "Delivered").length;
+        const earnings = data.reduce((sum, o) => sum + o.total, 0);
 
-/* ------------------- Suppliers ------------------- */
-const SupplierSchema = new mongoose.Schema({
-    supplier_id: String,
-    name: String,
-    contact: String,
-    email: String,
-    address: String,
-    products_supplied: [String], // array of product names
-});
-
-const Supplier = mongoose.model("Supplier", SupplierSchema, "supplier");
-
-app.get("/supplier", async (req, res) => {
-    try {
-        const suppliers = await Supplier.find();
-        res.json(suppliers);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.delete("/supplier/:id", async (req, res) => {
-    try {
-        await Supplier.findByIdAndDelete(req.params.id);
-        res.json({ message: "Supplier deleted" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-/* ------------------- Products ------------------- */
-const ProductSchema = new mongoose.Schema({
-    product_name: String,
-    type: String,
-    price: Number,
-    quanity: Number,
-    status: String,
-    supplier_id: String,
-});
-
-const Product = mongoose.model("products", ProductSchema, "products");
-
-// fetch all products
-app.get("/products", async (req, res) => {
-    try {
-        const products = await Product.find();
-        res.json(products);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// fetch one product by ID
-app.get("/products/:id", async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);
-        if (!product) return res.status(404).json({ error: "Product not found" });
-        res.json(product);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// add new product
-app.post("/products", async (req, res) => {
-    try {
-        const newProduct = new Product(req.body);
-        await newProduct.save();
-        res.json(newProduct);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// update product
-app.put("/products/:id", async (req, res) => {
-    try {
-        const updated = await Product.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
-        res.json(updated);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// delete product
-app.delete("/products/:id", async (req, res) => {
-    try {
-        await Product.findByIdAndDelete(req.params.id);
-        res.json({ message: "Product deleted" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// fetch products by type
-app.get("/products/type/:type", async (req, res) => {
-    try {
-        const products = await Product.find({ type: req.params.type });
-        res.json(products);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-/* ------------------- Sales ------------------- */
-const SalesSchema = new mongoose.Schema({
-    Product: String,
-    Category: String,
-    Quantity: Number,
-    Amount: Number,
-    Date: String,
-    Customer: String
-});
-
-const Sales = mongoose.model("Sales", SalesSchema, "sales");
-
-app.get("/sales", async (req, res) => {
-    try {
-        const sales = await Sales.find();
-        res.json(sales);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.post("/sales", async (req, res) => {
-    try {
-        const newSale = new Sales(req.body);
-        await newSale.save();
-        res.json(newSale);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.delete("/sales/:id", async (req, res) => {
-    try {
-        await Sales.findByIdAndDelete(req.params.id);
-        res.json({ message: "Sale deleted" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-/* ------------------- Dashboard Stats ------------------- */
-app.get("/dashboard-stats", async (req, res) => {
-    try {
-        const customerCount = await Customer.countDocuments();
-        const supplierCount = await Supplier.countDocuments();
-        const productCount = await Product.countDocuments();
-        const salesCount = await Sales.countDocuments();
-
-        const totalSalesAmountAgg = await Sales.aggregate([
-            { $group: { _id: null, totalAmount: { $sum: { $toDouble: "$Amount" } } } }
-        ]);
-        const totalSalesAmount = totalSalesAmountAgg[0]?.totalAmount || 0;
-
-        const reportCount = 9; // fixed number for now
-
-        res.json({
-            customers: customerCount,
-            suppliers: supplierCount,
-            products: productCount,
-            sales: salesCount,
-            totalSalesAmount,
-            reports: reportCount
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-/* ------------------- Reports ------------------- */
-app.get("/reports/:month", async (req, res) => {
-    try {
-        const monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-        const monthIndex = monthNames.indexOf(req.params.month);
-        if (monthIndex === -1) return res.status(400).json({ error: "Invalid month" });
-
-        const year = 2025;
-        const startDate = new Date(year, monthIndex, 1);
-        const endDate = new Date(year, monthIndex + 1, 0, 23, 59, 59);
-
-        const salesInMonth = await Sales.find({
-            Date: { $gte: startDate.toISOString(), $lte: endDate.toISOString() }
-        });
-
-        const totalSalesAmount = salesInMonth.reduce((sum, sale) => sum + Number(sale.Amount), 0);
-        const totalOrders = salesInMonth.length;
-
-        const productsSummaryMap = {};
-        salesInMonth.forEach(sale => {
-            productsSummaryMap[sale.Category] = (productsSummaryMap[sale.Category] || 0) + sale.Quantity;
-        });
-        const productsSummary = Object.keys(productsSummaryMap).map(key => ({
-            category: key,
-            count: productsSummaryMap[key]
+        setStats(prev => ({
+          ...prev,
+          pendingOrders: pending,
+          deliveredOrders: delivered,
+          totalEarnings: earnings,
+          reports: 9, // static for now
+          monthlyOrders: data.length,
+          monthlyEarnings: earnings
         }));
 
-        const productMap = {};
-        salesInMonth.forEach(sale => {
-            productMap[sale.Product] = (productMap[sale.Product] || 0) + Number(sale.Amount);
-        });
-        const topProducts = Object.entries(productMap)
-            .map(([name, sales]) => ({ name, sales }))
-            .sort((a, b) => b.sales - a.sales)
-            .slice(0, 5);
+        // show 5 recent orders
+        const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setRecentOrders(sorted.slice(0, 5));
+      });
 
-        res.json({ totalSalesAmount, totalOrders, productsSummary, topProducts });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-});
+  }, [navigate]);
 
-/* ------------------- Cust Master ------------------- */
-const CustMasterSchema = new mongoose.Schema({
-    cust_id: String,   // added field
-    cust_name: String,
-    email: String,
-    password: String,
-});
+  const cards = [
+    { title: "My Products", value: stats.products, link: "/supplier-module/myproducts", color: "linear-gradient(135deg, #1e88e5, #42a5f5)" },
+    { title: "Pending Orders", value: stats.pendingOrders, link: "/supplier-module/orders", color: "linear-gradient(135deg, #43a047, #66bb6a)" },
+    { title: "Delivered Orders", value: stats.deliveredOrders, link: "/supplier-module/orders", color: "linear-gradient(135deg, #fb8c00, #ffa726)" },
+    { title: "Total Earnings", value: `₹${stats.totalEarnings}`, link: "/supplier-module/sup-report", color: "linear-gradient(135deg, #8e24aa, #ab47bc)" },
+    { title: "Low Stock Items", value: stats.lowStock, link: "/supplier-module/myproducts", color: "linear-gradient(135deg, #e53935, #ef5350)" },
+    { title: "Reports", value: stats.reports, link: "/supplier-module/sup-report", color: "linear-gradient(135deg, #00acc1, #26c6da)" },
+    { title: "Top Products", value: stats.topProducts.length, link: "/supplier-module/sup-report", color: "linear-gradient(135deg, #fdd835, #ffeb3b)" },
+    { title: "Monthly Orders", value: stats.monthlyOrders, link: "/supplier-module/orders", color: "linear-gradient(135deg, #6d4c41, #8d6e63)" },
+    { title: "Monthly Earnings", value: `₹${stats.monthlyEarnings}`, link: "/supplier-module/sup-report", color: "linear-gradient(135deg, #5e35b1, #7e57c2)" },
+  ];
 
-const CustMaster = mongoose.model("CustMaster", CustMasterSchema, "cust_master");
+  return (
+    <div className="container-fluid min-vh-100" style={{ background: "linear-gradient(to right, #e3f2fd, #bbdefb)" }}>
+      <div className="container pt-3">
+        <h2 className="mb-4 fw-bold text-dark">Welcome, {supplier?.supplier_name || "Supplier"}</h2>
+        <div className="row g-4">
+          {cards.map((card, index) => (
+            <div key={index} className="col-md-4 col-12">
+              <div className="card text-white shadow text-center p-3 h-100" style={{ background: card.color }}>
+                <h5>{index + 1}️⃣ {card.title}</h5>
+                <p className="fs-4 fw-bold">{card.value}</p>
+                <NavLink to={card.link} className="btn btn-sm btn-light mt-2">
+                  View
+                </NavLink>
+              </div>
+            </div>
+          ))}
+        </div>
 
-app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await CustMaster.findOne({ email, password });
-        if (!user) {
-            return res.status(401).json({ message: "Invalid email or password" });
-        }
-        res.json({ message: "Login successful", cust_name: user.cust_name });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+        {/* Recent Orders Table */}
+        <div className="mt-5">
+          <h4 className="text-dark">Recent Orders</h4>
+          <table className="table table-hover table-striped shadow">
+            <thead className="table-primary">
+              <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Buyer</th>
+                <th>Quantity</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentOrders.length > 0 ? recentOrders.map((order, index) => (
+                <tr key={order._id}>
+                  <td>{index + 1}</td>
+                  <td>{order.items.map(i => i.product_name).join(", ")}</td>
+                  <td>{order.customer.name}</td>
+                  <td>{order.items.reduce((sum, i) => sum + i.count, 0)}</td>
+                  <td>
+                    <span className={`badge ${
+                      order.status === "Delivered" ? "bg-success" :
+                      order.status === "Pending" ? "bg-warning text-dark" : "bg-danger"
+                    }`}>
+                      {order.status}
+                    </span>
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="5" className="text-center text-muted">No recent orders.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-/* ------------------- Supplier Master ------------------- */
-const SupMasterSchema = new mongoose.Schema({
-    sup_id: String,
-    supplier_name: String,
-    email: String,
-    password: String
-});
-
-const SupMaster = mongoose.model("SupMaster", SupMasterSchema, "supplier_master");
-
-app.post("/supplier-module/sup-login", async (req, res) => {
-    const { sup_id, password } = req.body;
-    try {
-        const supplier = await SupMaster.findOne({ sup_id, password });
-        if (!supplier) {
-            return res.status(401).json({ message: "❌ Invalid Supplier ID or Password" });
-        }
-        res.json({
-            message: "✅ Login successful",
-            sup_id: supplier.sup_id,
-            supplier_name: supplier.supplier_name,
-            email: supplier.email
-        });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-app.post("/signup", async (req, res) => {
-    const { name, email, password } = req.body;
-
-    try {
-        console.log("📥 Incoming signup:", req.body); // log request
-
-        const existing = await CustMaster.findOne({ email });
-        if (existing) {
-            return res.status(400).json({ message: "❌ Email already registered" });
-        }
-
-        const count = await CustMaster.countDocuments();
-        const cust_id = `CUS${(count + 1).toString().padStart(3, "0")}`;
-
-        const newCustMaster = new CustMaster({
-            cust_id,
-            cust_name: name,
-            email,
-            password,
-        });
-        await newCustMaster.save();
-
-        const newCustomer = new Customer({
-            id: cust_id,
-            name,
-            email,
-        });
-        await newCustomer.save();
-
-        res.json({ message: "✅ Signup successful", cust_id, cust_name: name });
-    } catch (err) {
-        console.error("❌ Signup error (backend):", err); // full error
-        res.status(500).json({ error: err.message });
-    }
-});
-
-/* ------------------- Server ------------------- */
-const PORT = 5000;
-app.listen(PORT, () =>
-    console.log(`🚀 Server running at http://localhost:${PORT}`)
-);
+export default SupplierDashboard;

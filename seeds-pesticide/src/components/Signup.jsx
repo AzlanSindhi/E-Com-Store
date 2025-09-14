@@ -6,7 +6,9 @@ const Signup = () => {
         name: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        address: "",
+        dob: ""
     });
 
     const handleChange = (e) => {
@@ -25,7 +27,9 @@ const Signup = () => {
             const res = await axios.post("http://localhost:5000/signup", {
                 name: formData.name,
                 email: formData.email,
-                password: formData.password
+                password: formData.password,
+                address: formData.address,
+                dob: formData.dob
             });
 
             alert(res.data.message || "Signup successful!");
@@ -42,6 +46,7 @@ const Signup = () => {
                 <p className="text-muted text-center mb-4">Sign up to get started</p>
 
                 <form onSubmit={handleSubmit}>
+                    {/* Name */}
                     <div className="mb-3">
                         <label htmlFor="name" className="form-label fw-semibold">Full Name</label>
                         <input
@@ -55,6 +60,7 @@ const Signup = () => {
                         />
                     </div>
 
+                    {/* Email */}
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label fw-semibold">Email</label>
                         <input
@@ -68,6 +74,34 @@ const Signup = () => {
                         />
                     </div>
 
+                    {/* Address */}
+                    <div className="mb-3">
+                        <label htmlFor="address" className="form-label fw-semibold">Address</label>
+                        <textarea
+                            id="address"
+                            className="form-control"
+                            placeholder="Enter your address"
+                            rows="2"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    {/* DOB */}
+                    <div className="mb-3">
+                        <label htmlFor="dob" className="form-label fw-semibold">Date of Birth</label>
+                        <input
+                            type="date"
+                            id="dob"
+                            className="form-control"
+                            value={formData.dob}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    {/* Password */}
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label fw-semibold">Password</label>
                         <input
@@ -81,6 +115,7 @@ const Signup = () => {
                         />
                     </div>
 
+                    {/* Confirm Password */}
                     <div className="mb-3">
                         <label htmlFor="confirmPassword" className="form-label fw-semibold">Confirm Password</label>
                         <input

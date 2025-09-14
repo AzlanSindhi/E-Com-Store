@@ -1,95 +1,140 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Reports = () => {
-    const [reportData] = useState({
-        totalSales: 16000,
-        totalOrders: 3,
-        categories: [
-            { name: "Seeds", count: 1 },
-            { name: "Pesticides", count: 1 },
-            { name: "Fertilizers", count: 1 },
-        ],
-        topProducts: [
-            { name: "Wheat Seeds", sales: 2000 },
-            { name: "Pesticide A", sales: 6000 },
-            { name: "Fertilizer X", sales: 8000 },
-        ],
-    });
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September"];
+  const currentMonth = new Date().toLocaleString("default", { month: "long" });
 
-    return (
-        <div
-            className="container-fluid p-4 min-vh-100"
-            style={{ background: "linear-gradient(to right, #f1f8e9, #dcedc8)" }}
-        >
-            <h2 className="fw-bold text-success mb-4 text-center">
-                🌾 Farm Reports & Analytics 📊
-            </h2>
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [report, setReport] = useState({
+    totalSalesAmount: 0,
+    totalOrders: 0,
+    productsSummary: [],
+    topProducts: []
+  });
+  const [loading, setLoading] = useState(true);
 
-            {/* Summary Cards */}
-            <div className="row mb-4">
-                <div className="col-md-4">
-                    <div className="card shadow border-0 text-center p-3 bg-light">
-                        <h5 className="text-success">💰 Total Sales</h5>
-                        <h3 className="fw-bold text-dark">₹{reportData.totalSales}</h3>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card shadow border-0 text-center p-3 bg-light">
-                        <h5 className="text-success">📦 Total Orders</h5>
-                        <h3 className="fw-bold text-dark">{reportData.totalOrders}</h3>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card shadow border-0 text-center p-3 bg-light">
-                        <h5 className="text-success">🌱 Active Categories</h5>
-                        <h3 className="fw-bold text-dark">{reportData.categories.length}</h3>
-                    </div>
-                </div>
-            </div>
+  const supplier = JSON.parse(localStorage.getItem("supplier"));
 
-            {/* Category Report */}
-            <div className="card shadow border-0 p-3 mb-4">
-                <h5 className="text-success mb-3">🌿 Sales by Category</h5>
-                <table className="table table-bordered table-hover align-middle text-center">
-                    <thead className="table-success">
-                        <tr>
-                            <th>Category</th>
-                            <th>Orders Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {reportData.categories.map((c, index) => (
-                            <tr key={index}>
-                                <td className="fw-semibold">{c.name}</td>
-                                <td>{c.count}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+  useEffect(() => {
+    if (!supplier) {
+      console.warn("⚠️ No supplier found in localStorage, not fetching reports");
+      setLoading(false);
+      return;
+    }
 
-            {/* Top Products Report */}
-            <div className="card shadow border-0 p-3">
-                <h5 className="text-success mb-3">🌾 Top Products</h5>
-                <table className="table table-striped table-hover align-middle text-center">
-                    <thead className="table-success">
-                        <tr>
-                            <th>Product</th>
-                            <th>Sales (₹)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {reportData.topProducts.map((p, index) => (
-                            <tr key={index}>
-                                <td className="fw-semibold">{p.name}</td>
-                                <td className="fw-bold">₹{p.sales}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+    const fetchReport = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/reports/${selectedMonth}?sup_id=${supplier.sup_id}`);
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        const data = await res.json();
+        setReport(data);
+      } catch (err) {
+        console.error("❌ Error fetching report:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, [selectedMonth, supplier]);
+
+  if (loading) {
+    return <p className="text-center mt-5">⏳ Loading report...</p>;
+  }
+
+  return (
+    <div className="container-fluid bg-light min-vh-100 py-4">
+      <div className="container">
+        <h2 className="mb-4 pt-2 text-dark">📊 Supplier Reports</h2>
+
+        {supplier && (
+          <div className="alert alert-primary fw-bold">
+            Viewing reports for: {supplier.supplier_name} (ID: {supplier.sup_id})
+          </div>
+        )}
+
+        {/* Month Selector */}
+        <div className="mb-4">
+          <label className="me-2 fw-bold">Select Month:</label>
+          <select
+            className="form-select w-auto d-inline"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          >
+            {months.map((month, i) => (
+              <option key={i} value={month}>{month} 2025</option>
+            ))}
+          </select>
         </div>
-    );
+
+        {/* Summary Cards */}
+        <div className="row g-4 mb-4">
+          <div className="col-md-6">
+            <div className="card text-center p-3 shadow-sm border-light">
+              <h5>Total Sales Amount</h5>
+              <p className="fs-4 fw-bold text-success">₹{report.totalSalesAmount}</p>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card text-center p-3 shadow-sm border-light">
+              <h5>Total Orders</h5>
+              <p className="fs-4 fw-bold text-primary">{report.totalOrders}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Products Summary */}
+        <h4 className="mb-3 text-dark">Products by Category</h4>
+        <table className="table table-striped table-bordered">
+          <thead className="table-light">
+            <tr>
+              <th>Category</th>
+              <th>Number of Items Sold</th>
+            </tr>
+          </thead>
+          <tbody>
+            {report.productsSummary.length > 0 ? (
+              report.productsSummary.map((item, i) => (
+                <tr key={i}>
+                  <td>{item.category}</td>
+                  <td>{item.count}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="2" className="text-center text-muted">No data available</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        {/* Top Products */}
+        <h4 className="mb-3 mt-4 text-dark">Top Products</h4>
+        <table className="table table-striped table-bordered">
+          <thead className="table-light">
+            <tr>
+              <th>Product</th>
+              <th>Sales Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {report.topProducts.length > 0 ? (
+              report.topProducts.map((p, i) => (
+                <tr key={i}>
+                  <td>{p.name}</td>
+                  <td className="text-success">₹{p.sales}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="2" className="text-center text-muted">No data available</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default Reports;

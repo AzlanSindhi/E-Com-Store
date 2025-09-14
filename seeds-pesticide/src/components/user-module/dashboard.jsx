@@ -8,7 +8,7 @@ const Dashboard = () => {
         customers: 0,
         suppliers: 0,
         products: 0,
-        sales: 0,
+        orders: 0,
         reports: 0,
         totalSalesAmount: 0
     });
@@ -56,7 +56,7 @@ const Dashboard = () => {
                     <div className="col-12">
                         <div className="card bg-secondary text-white shadow text-center p-3">
                             <h5>Sales</h5>
-                            <p className="fs-4 fw-bold">{stats.sales}</p>
+                            <p className="fs-4 fw-bold">{stats.orders}</p>
                             <p className="fs-5 fw-bold">Total: ₹{stats.totalSalesAmount}</p>
                             <NavLink to="/user-module/sales" className="btn btn-sm btn-outline-light">
                                 View Sales

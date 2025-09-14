@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [cust_name, setName] = useState(""); // ✅ NEW
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -14,22 +15,27 @@ const Login = () => {
       const res = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ cust_name, email, password }), // ✅ send name too
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Save user in localStorage
+        // ✅ Save user details to localStorage
         localStorage.setItem(
           "user",
-          JSON.stringify({ name: data.name, email })
+          JSON.stringify({
+            name: data.cust_name,
+            email: data.email,
+          })
         );
 
-        setMessage(`Welcome ${data.name}`);
+        setMessage(`Welcome Back Customer`);
 
-        // redirect to home
-        navigate("/");
+        // ✅ Refresh page to re-render Nav with updated user
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         setMessage(data.message || "Login failed");
       }
@@ -37,6 +43,7 @@ const Login = () => {
       console.error("❌ Error logging in:", err);
       setMessage("Server error");
     }
+    navigate("/");
   };
 
   return (
@@ -54,6 +61,7 @@ const Login = () => {
         </p>
 
         <form onSubmit={handleSubmit}>
+        
           <div className="mb-3">
             <label htmlFor="email" className="form-label fw-semibold">
               Email
@@ -68,6 +76,7 @@ const Login = () => {
               required
             />
           </div>
+
           <div className="mb-3">
             <label htmlFor="password" className="form-label fw-semibold">
               Password
