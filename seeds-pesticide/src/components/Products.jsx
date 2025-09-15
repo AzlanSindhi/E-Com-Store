@@ -62,10 +62,11 @@ const ProductPage = () => {
         <div className="row align-items-center">
           <div className="col-md-5">
             <img
-              src={product.image || "https://via.placeholder.com/300x300.png?text=Product"}
-              alt={product.product_name}
-              className="img-fluid rounded"
-            />
+  src={product.url || "https://via.placeholder.com/400x400.png?text=No+Image"}
+  alt={product.product_name}
+  className="img-fluid rounded"
+/>
+
           </div>
           <div className="col-md-7">
             <h2 className="text-success fw-bold">{product.product_name}</h2>

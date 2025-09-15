@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { href, Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [cust_name, setName] = useState(""); // ✅ NEW
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -10,40 +9,37 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(""); // clear previous message
 
     try {
       const res = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cust_name, email, password }), // ✅ send name too
+        body: JSON.stringify({ email, password }), // ✅ only email + password
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Save user details to localStorage
+        // ✅ Save cust_name + email in localStorage
         localStorage.setItem(
           "user",
           JSON.stringify({
-            name: data.cust_name,
+            cust_name: data.cust_name, // ✅ save cust_name
             email: data.email,
           })
         );
 
-        setMessage(`Welcome Back Customer`);
-
-        // ✅ Refresh page to re-render Nav with updated user
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        setMessage(`✅ Welcome back, ${data.cust_name}!`);
+        setTimeout(()=> window.location.reload(false), 1000);
+        setTimeout(() => (window.location.href = "/"), 1000);
       } else {
-        setMessage(data.message || "Login failed");
+        setMessage(data.message || "❌ Login failed. Try again.");
       }
     } catch (err) {
       console.error("❌ Error logging in:", err);
-      setMessage("Server error");
+      setMessage("⚠️ Server error. Please try later.");
     }
-    navigate("/");
   };
 
   return (
@@ -61,7 +57,7 @@ const Login = () => {
         </p>
 
         <form onSubmit={handleSubmit}>
-        
+          {/* Email */}
           <div className="mb-3">
             <label htmlFor="email" className="form-label fw-semibold">
               Email
@@ -77,6 +73,7 @@ const Login = () => {
             />
           </div>
 
+          {/* Password */}
           <div className="mb-3">
             <label htmlFor="password" className="form-label fw-semibold">
               Password

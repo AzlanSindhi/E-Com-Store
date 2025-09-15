@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const Reports = () => {
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September"];
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
-
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+const SupplierReports = () => {
   const [report, setReport] = useState({
     totalSalesAmount: 0,
     totalOrders: 0,
@@ -24,22 +20,22 @@ const Reports = () => {
 
     const fetchReport = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/reports/${selectedMonth}?sup_id=${supplier.sup_id}`);
+        const res = await fetch(`http://localhost:5000/supplier-reports?sup_id=${supplier.sup_id}`);
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
         const data = await res.json();
         setReport(data);
       } catch (err) {
-        console.error("❌ Error fetching report:", err);
+        console.error("❌ Error fetching supplier report:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchReport();
-  }, [selectedMonth, supplier]);
+  }, [supplier]);
 
   if (loading) {
-    return <p className="text-center mt-5">⏳ Loading report...</p>;
+    return <p className="text-center mt-5">⏳ Loading supplier report...</p>;
   }
 
   return (
@@ -52,20 +48,6 @@ const Reports = () => {
             Viewing reports for: {supplier.supplier_name} (ID: {supplier.sup_id})
           </div>
         )}
-
-        {/* Month Selector */}
-        <div className="mb-4">
-          <label className="me-2 fw-bold">Select Month:</label>
-          <select
-            className="form-select w-auto d-inline"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            {months.map((month, i) => (
-              <option key={i} value={month}>{month} 2025</option>
-            ))}
-          </select>
-        </div>
 
         {/* Summary Cards */}
         <div className="row g-4 mb-4">
@@ -137,4 +119,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default SupplierReports;

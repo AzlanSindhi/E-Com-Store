@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminNav from "./admin-nav";
 
 const Reports = () => {
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September"
-  ];
-
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [loading, setLoading] = useState(false);
 
   const [report, setReport] = useState({
     totalSalesAmount: 0,
@@ -17,110 +11,127 @@ const Reports = () => {
     topProducts: []
   });
 
+  const fetchReport = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/reports");
+      const data = await res.json();
+
+      setReport({
+        totalSalesAmount: data.totalSales,
+        totalOrders: data.totalOrders,
+        productsSummary: Object.entries(data.productsSold || {}).map(([category, obj]) => ({
+          category,
+          count: obj.totalQuantity
+        })),
+        topProducts: (data.topProducts || []).map(p => ({
+          name: p.name,
+          sales: p.sales
+        }))
+      });
+    } catch (err) {
+      console.error("❌ Error fetching report:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetch(`http://localhost:5000/reports/${selectedMonth}`)
-      .then(res => res.json())
-      .then(data => setReport(data))
-      .catch(err => console.error("❌ Error fetching report:", err));
-  }, [selectedMonth]);
+    fetchReport();
+  }, []);
 
   return (
     <div className="container-fluid bg-dark text-white min-vh-100 py-4">
       <AdminNav />
       <div className="container">
-        <h2 className="mb-4 pt-2">Reports</h2>
+        <h2 className="mb-4 pt-2 text-center fw-bold">📊 Reports</h2>
 
-        {/* Month Selector */}
-        <div className="mb-4">
-          <label className="me-2 fw-bold">Select Month:</label>
-          <select
-            className="form-select bg-secondary text-white w-auto d-inline"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            {months.map((month, index) => (
-              <option key={index} value={month}>
-                {month} 2025
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="row g-4 mb-4">
-          <div className="col-md-6">
-            <div className="card bg-secondary text-white text-center p-3">
-              <h5>Total Sales Amount</h5>
-              <p className="fs-4 fw-bold">
-                ₹{report.totalSalesAmount?.toLocaleString() || 0}
-              </p>
-            </div>
+        {loading ? (
+          <div className="text-center my-5">
+            <div className="spinner-border text-light" role="status"></div>
+            <p className="mt-2">Loading report...</p>
           </div>
-          <div className="col-md-6">
-            <div className="card bg-secondary text-white text-center p-3">
-              <h5>Total Orders</h5>
-              <p className="fs-4 fw-bold">{report.totalOrders || 0}</p>
+        ) : (
+          <>
+            {/* Summary Cards */}
+            <div className="row g-4 mb-4">
+              <div className="col-md-6">
+                <div className="card bg-secondary shadow-lg border-0 text-center p-4 rounded-4">
+                  <h5>Total Sales Amount</h5>
+                  <p className="fs-3 fw-bold text-success">
+                    ₹{report.totalSalesAmount?.toLocaleString() || 0}
+                  </p>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="card bg-secondary shadow-lg border-0 text-center p-4 rounded-4">
+                  <h5>Total Orders</h5>
+                  <p className="fs-3 fw-bold text-info">
+                    {report.totalOrders || 0}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Products Summary */}
-        <div className="mb-4">
-          <h4 className="mb-3">Products by Category</h4>
-          <table className="table table-dark table-striped">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Number of Items Sold</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.productsSummary?.length > 0 ? (
-                report.productsSummary.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.category}</td>
-                    <td>{item.count}</td>
+            {/* Products Summary */}
+            <div className="card bg-secondary shadow-sm border-0 p-3 mb-4 rounded-4">
+              <h4 className="mb-3 text-warning">Products by Category</h4>
+              <table className="table table-dark table-hover table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Number of Items</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="2" className="text-center">
-                    No data available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {report.productsSummary?.length > 0 ? (
+                    report.productsSummary.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.category}</td>
+                        <td>{item.count}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="2" className="text-center">
+                        No data available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-        {/* Top Products */}
-        <div className="mb-4">
-          <h4 className="mb-3">Top Products</h4>
-          <table className="table table-dark table-striped">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Sales Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.topProducts?.length > 0 ? (
-                report.topProducts.map((product, index) => (
-                  <tr key={index}>
-                    <td>{product.name}</td>
-                    <td>₹{product.sales.toLocaleString()}</td>
+            {/* Top Products */}
+            <div className="card bg-secondary shadow-sm border-0 p-3 rounded-4">
+              <h4 className="mb-3 text-warning">Top Products</h4>
+              <table className="table table-dark table-hover table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Sales Amount</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="2" className="text-center">
-                    No data available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {report.topProducts?.length > 0 ? (
+                    report.topProducts.map((product, index) => (
+                      <tr key={index}>
+                        <td>{product.name}</td>
+                        <td>₹{product.sales.toLocaleString()}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="2" className="text-center">
+                        No data available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

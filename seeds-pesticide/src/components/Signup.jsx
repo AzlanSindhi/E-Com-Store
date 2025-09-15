@@ -33,10 +33,12 @@ const Signup = () => {
             });
 
             alert(res.data.message || "Signup successful!");
+            setTimeout(() => {navigate("/login")}, 1000);
         } catch (err) {
             console.error("❌ Signup error:", err);
             alert(err.response?.data?.message || "Signup failed!");
         }
+    navigate ("/login");
     };
 
     return (

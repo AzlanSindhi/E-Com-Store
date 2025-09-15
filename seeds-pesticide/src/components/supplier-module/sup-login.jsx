@@ -23,17 +23,25 @@ const SupLogin = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Save sup_id and supplier_name separately
-        localStorage.setItem("sup_id", data.sup_id);
-        localStorage.setItem("supplier_name", data.supplier_name);
+        // ✅ Save supplier object in localStorage
+        localStorage.setItem(
+          "supplier",
+          JSON.stringify({
+            sup_id: data.sup_id,
+            supplier_name: data.supplier_name,
+            email: data.email,
+          })
+        );
 
         setMsgType("success");
         setMessage(`✅ Welcome ${data.supplier_name}`);
 
-        setTimeout(() => navigate("/supplier-module/sup-dashboard"), 1000);
+        // ✅ Go to dashboard (with refresh)
+        setTimeout(() => (window.location.href = "/supplier-module/sup-dashboard"), 1000);
       } else {
         setMsgType("error");
         setMessage(data.message || "❌ Login failed. Check your email & password.");
+        setPassword(""); // ✅ clear password for better UX
       }
     } catch (err) {
       console.error("❌ Error logging in:", err);
