@@ -27,7 +27,7 @@ const Products = () => {
                                 <th>Category</th>
                                 <th>Price (₹)</th>
                                 <th>Quantity</th>
-                                <th>Status</th>
+                                
                                 <th>Supplier ID</th>
                                 <th>Action</th>
                             </tr>
@@ -40,16 +40,6 @@ const Products = () => {
                                     <td>{product.type}</td>
                                     <td>{product.price?.toLocaleString()}</td>
                                     <td>{product.quantity}</td>
-                                    <td>
-                                        <span
-                                            className={`badge ${product.status === "In Stock"
-                                                ? "bg-success"
-                                                : "bg-danger"
-                                                }`}
-                                        >
-                                            {product.status}
-                                        </span>
-                                    </td>
                                     <td>{product.supplier_id}</td>
                                     <td>
                                         <NavLink

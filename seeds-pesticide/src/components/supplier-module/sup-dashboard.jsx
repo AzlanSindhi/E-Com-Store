@@ -105,7 +105,7 @@ const SupplierDashboard = () => {
                 <th>Product</th>
                 <th>Buyer</th>
                 <th>Quantity</th>
-                <th>Status</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -115,14 +115,7 @@ const SupplierDashboard = () => {
                   <td>{order.items.map(i => i.product_name).join(", ")}</td>
                   <td>{order.customer.name}</td>
                   <td>{order.items.reduce((sum, i) => sum + i.count, 0)}</td>
-                  <td>
-                    <span className={`badge ${
-                      order.status === "Delivered" ? "bg-success" :
-                      order.status === "Pending" ? "bg-warning text-dark" : "bg-danger"
-                    }`}>
-                      {order.status}
-                    </span>
-                  </td>
+                  
                 </tr>
               )) : (
                 <tr><td colSpan="5" className="text-center text-muted">No recent orders.</td></tr>

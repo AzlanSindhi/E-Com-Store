@@ -35,7 +35,7 @@ const Orders = () => {
                 <th>#</th>
                 <th>Order ID</th>
                 <th>Customer</th>
-                <th>Phone</th>
+                
                 <th>Total (₹)</th>
                 <th>Status</th>
                 <th>Date</th>
@@ -50,7 +50,7 @@ const Orders = () => {
                     <td>{index + 1}</td>
                     <td>{order.order_id}</td>
                     <td>{order.customer.name}</td>
-                    <td>{order.customer.phone}</td>
+                    
                     <td>₹{order.total}</td>
                     <td>{order.status}</td>
                     <td>{new Date(order.date).toLocaleString()}</td>

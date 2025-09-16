@@ -48,7 +48,7 @@ const MyProducts = () => {
                 <th>Category</th>
                 <th>Quantity</th>
                 <th>Price (₹)</th>
-                <th>Status</th>
+                
                 <th>Stock</th>
             </tr>
             </thead>
@@ -61,7 +61,7 @@ const MyProducts = () => {
                     <td>{p.type}</td>
                     <td>{p.quantity}</td>
                     <td>₹{p.price}</td>
-                    <td>{p.status}</td>
+                    
                     <td>{p.stocks}</td>
                 </tr>
                 ))
